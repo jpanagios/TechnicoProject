@@ -40,7 +40,7 @@ namespace TechnicoBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(PropertyOwner propertyOwner)
+        public async Task<IActionResult> Create([FromBody] PropertyOwner propertyOwner)
         {
             _logger.LogInformation("Creating a new property owner.");
             await _repository.AddAsync(propertyOwner);
@@ -48,7 +48,7 @@ namespace TechnicoBackend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, PropertyOwner propertyOwner)
+        public async Task<IActionResult> Update(int id, [FromBody] PropertyOwner propertyOwner)
         {
             if (id != propertyOwner.Id)
             {

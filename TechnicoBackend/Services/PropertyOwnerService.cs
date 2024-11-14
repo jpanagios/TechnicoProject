@@ -17,9 +17,17 @@ namespace TechnicoBackend.Services
             _logger = logger;
         }
 
-        public async Task<IEnumerable<PropertyOwner>> GetAllAsync() => await _context.PropertyOwners.ToListAsync();
+        public async Task<IEnumerable<PropertyOwner>> GetAllAsync()
+        {
+            _logger.LogInformation("Fetching all property owners.");
+            return await _context.PropertyOwners.ToListAsync();
+        }
 
-        public async Task<PropertyOwner?> GetByIdAsync(int id) => await _context.PropertyOwners.FindAsync(id);
+        public async Task<PropertyOwner?> GetByIdAsync(int id)
+        {
+            _logger.LogInformation($"Fetching property owner with ID {id}.");
+            return await _context.PropertyOwners.FindAsync(id);
+        }
 
         public async Task AddAsync(PropertyOwner propertyOwner)
         {

@@ -13,7 +13,7 @@ namespace TechnicoBackend.Migrations
 {
     [DbContext(typeof(TechnicoDbContext))]
     [Migration("20241112141521_initialcreate")]
-    partial class initialcreate
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
