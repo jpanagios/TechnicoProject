@@ -26,11 +26,11 @@ function LoginPage() {
     return (
         <div className="login-container">
             <div className="left-side">
-                <h1>Welcome to Technico</h1>
-                <p>
-                    Manage your properties and repairs seamlessly with our intuitive platform. 
-                    Secure, fast, and reliable services designed for modern users.
-                </p>
+                <img 
+                    src={require('../../assets/first_page.png')} 
+                    alt="Welcome" 
+                    className="left-side-image" 
+                />
             </div>
             <div className="right-side">
                 <div className="form-container">

@@ -42,8 +42,8 @@ function PropertiesPage() {
     };
 
     return (
-        <div className="center-container">
-            <div className="form-container">
+        <div className="properties-center-container">
+            <div className="properties-form-container">
                 <h1>Manage Properties</h1>
                 <form onSubmit={handleSubmit}>
                     <label htmlFor="identificationNumber">Identification Number</label>
@@ -83,7 +83,7 @@ function PropertiesPage() {
                 </form>
             </div>
 
-            <div className="property-list">
+            <div className="properties-list">
                 <h2>Property List</h2>
                 {properties.length > 0 ? (
                     properties.map((property) => (

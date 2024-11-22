@@ -39,11 +39,7 @@ function RegisterPage() {
     return (
         <div className="register-container">
             <div className="register-left-side">
-                <h1>Welcome to Technico</h1>
-                <p>
-                    Join the Technico family and start managing your properties and repairs efficiently. Sign up today and explore
-                    our state-of-the-art features.
-                </p>
+                <img src={require('../../assets/first_page.png')} alt="Technico" className="register-image" />
             </div>
             <div className="register-right-side">
                 <div className="register-form-container">

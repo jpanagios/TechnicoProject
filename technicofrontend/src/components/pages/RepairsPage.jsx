@@ -44,8 +44,8 @@ function RepairsPage() {
     };
 
     return (
-        <div className="center-container">
-            <div className="form-container">
+        <div className="repairs-center-container">
+            <div className="repairs-form-container">
                 <h1>Manage Repairs</h1>
                 <form onSubmit={handleSubmit}>
                     <label htmlFor="scheduledDate">Scheduled Date</label>
@@ -105,7 +105,7 @@ function RepairsPage() {
                 </form>
             </div>
 
-            <div className="repair-list">
+            <div className="repairs-list">
                 <h2>Repair List</h2>
                 {repairs.length > 0 ? (
                     repairs.map((repair) => (
