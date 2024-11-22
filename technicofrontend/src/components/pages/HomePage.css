@@ -1,0 +1,92 @@
+.homepage-container {
+    text-align: center;
+    margin: 20px auto;
+}
+
+.section {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    margin-top: 30px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+}
+
+.logo {
+    width: 128px; /* Μπορείς να προσαρμόσεις το μέγεθος */
+    height: 128px;
+    margin-bottom: 15px;
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: #257180;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+    margin-top: 10px;
+    display: inline-block;
+}
+
+.button:hover {
+    background-color: #1e5e60;
+}
+
+.description {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #555;
+    text-align: center;
+}
+
+.homepage-container {
+    position: relative;
+    text-align: center;
+    margin: 20px auto;
+    background-image: url('../../assets/background_img.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.homepage-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Μαύρο overlay με 50% διαφάνεια */
+    z-index: -1; /* Βρίσκεται πίσω από το περιεχόμενο */
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    background-image: url('../../assets/background_img.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+}
+
+
+
+
