@@ -1,4 +1,6 @@
 ﻿using TechnicoBackend.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace TechnicoBackend.Interfaces
 {

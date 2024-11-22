@@ -2,18 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using TechnicoBackend.Data;
 using TechnicoBackend.Interfaces;
 using TechnicoBackend.Repositories;
-using TechnicoBackend.Services; 
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Add services to the container
 builder.Services.AddDbContext<TechnicoDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<IPropertyOwnerRepository, PropertyOwnerService>();
-builder.Services.AddScoped<IPropertyItemRepository, PropertyItemRepository>(); 
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
@@ -23,12 +20,15 @@ builder.Services.AddCors(options =>
                           .AllowAnyHeader());
 });
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
-    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "TechnicoBackend v1"));
+    app.UseSwaggerUI();
 }
 
 app.UseCors("AllowAll");

@@ -12,8 +12,8 @@ using TechnicoBackend.Data;
 namespace TechnicoBackend.Migrations
 {
     [DbContext(typeof(TechnicoDbContext))]
-    [Migration("20241112141521_initialcreate")]
-    partial class InitialCreate
+    [Migration("20241121143658_Database")]
+    partial class Database
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -128,6 +128,34 @@ namespace TechnicoBackend.Migrations
                     b.HasIndex("PropertyItemId");
 
                     b.ToTable("Repairs");
+                });
+
+            modelBuilder.Entity("TechnicoBackend.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("TechnicoBackend.Models.PropertyOwnerPropertyItem", b =>
