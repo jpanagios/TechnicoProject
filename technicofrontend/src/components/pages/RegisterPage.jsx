@@ -1,143 +1,173 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { register } from '../../api/userApi';
-import './RegisterPage.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { register } from "../../api/userApi";
+import "./RegisterPage.css";
 
 function RegisterPage() {
-    const [formData, setFormData] = useState({
-        vatNumber: '',
-        name: '',
-        surname: '',
-        address: '',
-        phoneNumber: '',
-        email: '',
-        password: '',
-    });
+  const [formData, setFormData] = useState({
+    vatNumber: "",
+    name: "",
+    surname: "",
+    address: "",
+    phoneNumber: "",
+    email: "",
+    password: "",
+  });
 
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError(''); // Καθαρισμός σφαλμάτων πριν από την προσπάθεια εγγραφής
-        try {
-            const response = await register(formData);
-            if (response) {
-                alert('Registration successful!');
-                navigate('/'); // Επιστροφή στη σελίδα Login
-            }
-        } catch (error) {
-            setError('Registration failed. Please check your details and try again.');
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    try {
+      const response = await register({
+        vatNumber: formData.vatNumber,
+        fullName: `${formData.name} ${formData.surname}`,
+        address: formData.address,
+        phoneNumber: formData.phoneNumber,
+        email: formData.email,
+        password: formData.password,
+      });
+      if (response) {
+        alert("Εγγραφή επιτυχής!");
+        navigate("/");
+      }
+    } catch (error) {
+      if (error.response && error.response.data) {
+        setError(
+          error.response.data.message || "Η εγγραφή απέτυχε. Δοκιμάστε ξανά."
+        );
+      } else {
+        setError("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.");
+      }
+    }
+  };
 
-    return (
-        <div className="register-container">
-            <div className="register-left-side">
-                <img src={require('../../assets/first_page.png')} alt="Technico" className="register-image" />
-            </div>
-            <div className="register-right-side">
-                <div className="register-form-container">
-                    <h2>Register</h2>
-                    {error && <p className="error-message">{error}</p>}
-                    <form onSubmit={handleSubmit}>
-                        <label htmlFor="vatNumber">VAT Number:</label>
-                        <input
-                            type="text"
-                            id="vatNumber"
-                            name="vatNumber"
-                            placeholder="Enter your VAT number"
-                            value={formData.vatNumber}
-                            onChange={handleChange}
-                            required
-                        />
-
-                        <label htmlFor="name">Name:</label>
-                        <input
-                            type="text"
-                            id="name"
-                            name="name"
-                            placeholder="Enter your name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            required
-                        />
-
-                        <label htmlFor="surname">Surname:</label>
-                        <input
-                            type="text"
-                            id="surname"
-                            name="surname"
-                            placeholder="Enter your surname"
-                            value={formData.surname}
-                            onChange={handleChange}
-                            required
-                        />
-
-                        <label htmlFor="address">Address:</label>
-                        <input
-                            type="text"
-                            id="address"
-                            name="address"
-                            placeholder="Enter your address"
-                            value={formData.address}
-                            onChange={handleChange}
-                            required
-                        />
-
-                        <label htmlFor="phoneNumber">Phone Number:</label>
-                        <input
-                            type="text"
-                            id="phoneNumber"
-                            name="phoneNumber"
-                            placeholder="Enter your phone number"
-                            value={formData.phoneNumber}
-                            onChange={handleChange}
-                            required
-                        />
-
-                        <label htmlFor="email">Email:</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="Enter your email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                        />
-
-                        <label htmlFor="password">Password:</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Enter your password"
-                            value={formData.password}
-                            onChange={handleChange}
-                            required
-                        />
-
-                        <button type="submit">Register</button>
-                    </form>
-                    <p>
-                        Already have an account?{' '}
-                        <span
-                            onClick={() => navigate('/')} // Στέλνει πίσω στη σελίδα Login
-                            className="register-login-link"
-                        >
-                            Login
-                        </span>
-                    </p>
-                </div>
-            </div>
+  return (
+    <div className="register-page-container">
+      <div className="register-page-left">
+        <img
+          src={require("../../assets/first_page.png")}
+          alt="Technico"
+          className="register-page-image"
+        />
+      </div>
+      <div className="register-page-right">
+        <div className="register-page-form-container">
+          <h2>Εγγραφή</h2>
+          {error && <p className="register-page-error">{error}</p>}
+          <form className="register-page-form" onSubmit={handleSubmit}>
+            <label className="register-page-label" htmlFor="vatNumber">
+              ΑΦΜ:
+            </label>
+            <input
+              className="register-page-input"
+              type="text"
+              id="vatNumber"
+              name="vatNumber"
+              placeholder="Εισάγετε το ΑΦΜ σας"
+              value={formData.vatNumber}
+              onChange={handleChange}
+              required
+            />
+            <label className="register-page-label" htmlFor="name">
+              Όνομα:
+            </label>
+            <input
+              className="register-page-input"
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Εισάγετε το όνομά σας"
+              value={formData.name}
+              onChange={handleChange}
+              required
+            />
+            <label className="register-page-label" htmlFor="surname">
+              Επώνυμο:
+            </label>
+            <input
+              className="register-page-input"
+              type="text"
+              id="surname"
+              name="surname"
+              placeholder="Εισάγετε το επώνυμό σας"
+              value={formData.surname}
+              onChange={handleChange}
+              required
+            />
+            <label className="register-page-label" htmlFor="address">
+              Διεύθυνση:
+            </label>
+            <input
+              className="register-page-input"
+              type="text"
+              id="address"
+              name="address"
+              placeholder="Εισάγετε τη διεύθυνσή σας"
+              value={formData.address}
+              onChange={handleChange}
+              required
+            />
+            <label className="register-page-label" htmlFor="phoneNumber">
+              Τηλέφωνο:
+            </label>
+            <input
+              className="register-page-input"
+              type="text"
+              id="phoneNumber"
+              name="phoneNumber"
+              placeholder="Εισάγετε τον αριθμό τηλεφώνου σας"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              required
+            />
+            <label className="register-page-label" htmlFor="email">
+              Email:
+            </label>
+            <input
+              className="register-page-input"
+              type="email"
+              id="email"
+              name="email"
+              placeholder="Εισάγετε το email σας"
+              value={formData.email}
+              onChange={handleChange}
+              required
+            />
+            <label className="register-page-label" htmlFor="password">
+              Κωδικός:
+            </label>
+            <input
+              className="register-page-input"
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Εισάγετε τον κωδικό σας"
+              value={formData.password}
+              onChange={handleChange}
+              required
+            />
+            <button className="register-page-button" type="submit">
+              Εγγραφή
+            </button>
+          </form>
+          <p className="register-page-link">
+            Έχετε ήδη λογαριασμό;{" "}
+            <a href="/" className="register-page-link-anchor">
+              Συνδεθείτε εδώ
+            </a>
+          </p>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
 
 export default RegisterPage;

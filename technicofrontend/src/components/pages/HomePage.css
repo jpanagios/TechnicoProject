@@ -1,6 +1,29 @@
 .homepage-container {
+    position: relative;
     text-align: center;
-    margin: 20px auto;
+    width: 100%;
+    height: 100vh; /* Το background γεμίζει όλο το παράθυρο */
+    background-image: url('../../assets/background_img.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.homepage-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Overlay για πιο ευδιάκριτο κείμενο */
+    z-index: -1; /* Πίσω από το περιεχόμενο */
 }
 
 .section {
@@ -23,7 +46,7 @@
 }
 
 .logo {
-    width: 128px; /* Μπορείς να προσαρμόσεις το μέγεθος */
+    width: 128px;
     height: 128px;
     margin-bottom: 15px;
 }
@@ -49,44 +72,3 @@
     color: #555;
     text-align: center;
 }
-
-.homepage-container {
-    position: relative;
-    text-align: center;
-    margin: 20px auto;
-    background-image: url('../../assets/background_img.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-}
-
-.homepage-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Μαύρο overlay με 50% διαφάνεια */
-    z-index: -1; /* Βρίσκεται πίσω από το περιεχόμενο */
-}
-
-body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background-image: url('../../assets/background_img.png');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-}
-
-
-
-

@@ -1,10 +1,11 @@
-.register-container {
+.register-page-container {
     display: flex;
     height: 100vh;
-    overflow: hidden; /* Για να αποφύγουμε το scroll */
+    overflow: hidden;
+    font-family: 'Poppins', sans-serif;
 }
 
-.register-left-side {
+.register-page-left {
     flex: 1;
     display: flex;
     justify-content: center;
@@ -12,82 +13,99 @@
     background-color: #2596be;
 }
 
-.register-image {
+.register-page-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-.register-right-side {
+.register-page-right {
     flex: 1;
     display: flex;
     justify-content: center;
     align-items: center;
     background-color: #155e75;
-    padding: 20px; /* Αποφυγή τυχόν περιθωρίου */
+    padding: 20px;
 }
 
-.register-form-container {
+.register-page-form-container {
     width: 100%;
-    max-width: 360px; /* Περιορισμός στο μέγιστο πλάτος */
+    max-width: 360px;
     padding: 30px;
-    background: white;
+    background: #333;
     border-radius: 8px;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    margin: 20px 0; /* Απόσταση από την κορυφή και το κάτω μέρος */
-    box-sizing: border-box; /* Ενσωμάτωση padding στα όρια του width */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.8);
+    margin: 20px 0;
+    box-sizing: border-box;
 }
 
-.register-form-container h2 {
-    font-size: 1.8rem; /* Ελαφρώς μικρότερη γραμματοσειρά */
+.register-page-form-container h2 {
+    font-size: 1.8rem;
     margin-bottom: 15px;
+    color: #fff;
+    font-weight: 600;
 }
 
-form {
+.register-page-form {
     display: flex;
     flex-direction: column;
 }
 
-label {
+.register-page-label {
     margin-bottom: 8px;
-    font-weight: bold;
+    font-weight: 500;
+    color: #ddd;
 }
 
-input {
+.register-page-input {
     margin-bottom: 16px;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #555;
     border-radius: 4px;
+    background-color: #444;
+    color: #fff;
     font-size: 1rem;
 }
 
-button {
+.register-page-input::placeholder {
+    color: #888;
+}
+
+.register-page-button {
     padding: 10px;
-    background-color: #005571;
+    background-color: #006d88;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 1rem;
+    font-weight: 500;
 }
 
-button:hover {
-    background-color: #003d4c;
+.register-page-button:hover {
+    background-color: #004f63;
 }
 
-p {
+.register-page-link {
     margin-top: 10px;
     text-align: center;
+    color: #fff;
+    font-weight: 400;
 }
 
-.register-login-link {
-    color: #005571;
-    cursor: pointer;
+.register-page-link a {
+    color: #006d88;
+    text-decoration: underline;
+    font-weight: 500;
+}
+
+.register-page-link a:hover {
+    color: #004f63;
     text-decoration: underline;
 }
 
-.error-message {
-    color: red;
+.register-page-error {
+    color: #ff4d4d;
     margin-bottom: 10px;
     font-size: 0.9rem;
 }

@@ -1,70 +1,84 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { login } from '../../api/userApi';
-import './LoginPage.css';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { login } from "../../api/userApi";
+import "./LoginPage.css";
 
 function LoginPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const navigate = useNavigate();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError(''); // Καθαρισμός σφαλμάτων πριν την προσπάθεια σύνδεσης
-        try {
-            const response = await login(email, password);
-            if (response) {
-                alert('Login successful!');
-                navigate('/home'); // Μεταφορά στη σελίδα Home
-            }
-        } catch (error) {
-            setError('Login failed. Please check your credentials.');
-        }
-    };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+    try {
+      const { token } = await login(email, password);
+      if (token) {
+        localStorage.setItem("token", token);
+        alert("Σύνδεση επιτυχής!");
+        navigate("/home");
+      }
+    } catch (error) {
+      console.error("Σφάλμα σύνδεσης:", error);
+      setError(
+        "Η σύνδεση απέτυχε. Ελέγξτε τα στοιχεία σας και προσπαθήστε ξανά."
+      );
+    }
+  };
 
-    return (
-        <div className="login-container">
-            <div className="left-side">
-                <img 
-                    src={require('../../assets/first_page.png')} 
-                    alt="Welcome" 
-                    className="left-side-image" 
-                />
-            </div>
-            <div className="right-side">
-                <div className="form-container">
-                    <h2>Login</h2>
-                    {error && <p className="error-message">{error}</p>}
-                    <form onSubmit={handleSubmit}>
-                        <label>Email:</label>
-                        <input
-                            type="email"
-                            placeholder="Enter your email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                        <label>Password:</label>
-                        <input
-                            type="password"
-                            placeholder="Enter your password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                        <button type="submit">Login</button>
-                    </form>
-                    <p>
-                        Don't have an account?{' '}
-                        <a href="/register" className="register-link">
-                            Register here
-                        </a>
-                    </p>
-                </div>
-            </div>
+  return (
+    <div className="login-page-container">
+      <div className="login-page-left">
+        <img
+          src={require("../../assets/first_page.png")}
+          alt="Καλωσορίσατε"
+          className="login-page-image"
+        />
+      </div>
+      <div className="login-page-right">
+        <div className="login-page-form-container">
+          <h2>Σύνδεση</h2>
+          {error && <p className="login-page-error">{error}</p>}
+          <form className="login-page-form" onSubmit={handleSubmit}>
+            <label className="login-page-label" htmlFor="email">
+              Email:
+            </label>
+            <input
+              className="login-page-input"
+              type="email"
+              id="email"
+              placeholder="Εισάγετε το email σας"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+            <label className="login-page-label" htmlFor="password">
+              Κωδικός:
+            </label>
+            <input
+              className="login-page-input"
+              type="password"
+              id="password"
+              placeholder="Εισάγετε τον κωδικό σας"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <button className="login-page-button" type="submit">
+              Σύνδεση
+            </button>
+          </form>
+          <p className="login-page-link">
+            Δεν έχετε λογαριασμό;{" "}
+            <a href="/register" className="login-page-register-link">
+              Εγγραφείτε εδώ
+            </a>
+          </p>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
 
 export default LoginPage;

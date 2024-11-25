@@ -7,20 +7,20 @@ import './HomePage.css'; // Σιγουρέψου ότι υπάρχει CSS αρ�
 function HomePage() {
     return (
         <div className="homepage-container">
-            <h1>What are you looking for today?</h1>
+            <h1>Τι ψάχνετε σήμερα;</h1>
             <div className="section">
                 <div className="card">
-                    <img src={PropertiesLogo} alt="Manage Properties" className="logo" />
-                    <Link to="/properties" className="button">Manage Properties</Link>
+                    <img src={PropertiesLogo} alt="Διαχείριση Ιδιοκτησιών" className="logo" />
+                    <Link to="/properties" className="button">Διαχείριση Ιδιοκτησιών</Link>
                     <p className="description">
-                        Here you can view, add, and manage your properties efficiently, all in one place.
+                        Εδώ μπορείτε να δείτε, να προσθέσετε και να διαχειριστείτε τις ιδιοκτησίες σας εύκολα, όλα σε ένα μέρος.
                     </p>
                 </div>
                 <div className="card">
-                    <img src={RepairsLogo} alt="Manage Repairs" className="logo" />
-                    <Link to="/repairs" className="button">Manage Repairs</Link>
+                    <img src={RepairsLogo} alt="Διαχείριση Επισκευών" className="logo" />
+                    <Link to="/repairs" className="button">Διαχείριση Επισκευών</Link>
                     <p className="description">
-                        Track and organize repairs for your properties with detailed management tools.
+                        Παρακολουθήστε και οργανώστε τις επισκευές των ιδιοκτησιών σας με λεπτομερή εργαλεία διαχείρισης.
                     </p>
                 </div>
             </div>

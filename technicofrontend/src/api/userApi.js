@@ -1,11 +1,32 @@
 import api from './axios';
 
+/**
+ * Συνάρτηση σύνδεσης χρήστη.
+ * @param {string} email - Το email του χρήστη.
+ * @param {string} password - Ο κωδικός του χρήστη.
+ * @returns {Promise<Object>} - Επιστρέφει το token από το backend.
+ */
 export const login = async (email, password) => {
-    const response = await api.post('/auth/login', { email, password });
-    return response.data;
+    try {
+        const response = await api.post('/auth/login', { email, password });
+        return response.data;
+    } catch (error) {
+        console.error('Σφάλμα κατά τη σύνδεση:', error);
+        throw error;
+    }
 };
 
+/**
+ * Συνάρτηση εγγραφής χρήστη.
+ * @param {Object} userData - Τα δεδομένα του χρήστη για εγγραφή.
+ * @returns {Promise<Object>} - Επιστρέφει μήνυμα επιτυχίας ή σφάλματος.
+ */
 export const register = async (userData) => {
-    const response = await api.post('/auth/register', userData);
-    return response.data;
+    try {
+        const response = await api.post('/auth/register', userData);
+        return response.data;
+    } catch (error) {
+        console.error('Σφάλμα κατά την εγγραφή:', error);
+        throw error;
+    }
 };

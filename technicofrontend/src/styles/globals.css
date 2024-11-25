@@ -1,12 +1,21 @@
-body {
-    font-family: Arial, sans-serif;
+/* Επαναφορά βασικών στοιχείων */
+html, body {
     margin: 0;
     padding: 0;
-    color: #333;
-    background: none; 
+    box-sizing: border-box; /* Περιλαμβάνει padding και border στα όρια */
+    font-family: Arial, sans-serif; /* Ενιαία γραμματοσειρά */
+    color: #333; /* Χρώμα κειμένου */
+    background: none; /* Καθαρό background */
 }
 
+/* Εφαρμογή σε όλα τα κείμενα */
+h1, h2, h3, h4, h5, h6, p, a, span, button, input, textarea {
+    font-family: Arial, sans-serif;
+    margin: 0; /* Αφαίρεση default περιθωρίου */
+    padding: 0; /* Αφαίρεση default padding */
+}
 
+/* Κεντρικό container */
 .container {
     width: 400px;
     margin: 100px auto;
@@ -17,15 +26,17 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
+/* Σχεδίαση κουμπιών */
 button {
     padding: 10px;
-    background-color: #257180;
-    color: #fff;
-    border: none;
+    background-color: #257180; /* Χρώμα κουμπιού */
+    color: #fff; /* Χρώμα κειμένου */
+    border: none; /* Αφαίρεση default περιγράμματος */
     border-radius: 4px;
-    cursor: pointer;
+    cursor: pointer; /* Αλλαγή δείκτη σε χεράκι */
 }
 
+/* Hover effect για κουμπιά */
 button:hover {
-    background-color: #1e5e60;
+    background-color: #1e5e60; /* Σκούρο χρώμα κατά το hover */
 }

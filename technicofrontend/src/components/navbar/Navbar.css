@@ -1,0 +1,45 @@
+.navbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #023b51; /* Χρώμα navbar */
+    padding: 10px 20px;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Σκιά για το navbar */
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.navbar-link {
+    color: #ffffff; /* Χρώμα κειμένου */
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: bold;
+    margin: 0 15px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    outline: none;
+}
+
+.navbar-link:hover {
+    color: #d3e2e5; /* Λευκό χρώμα με ελαφριά σκίαση */
+}
+
+.logout-button {
+    background: #ff4d4d; /* Κόκκινο για το κουμπί αποσύνδεσης */
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.logout-button:hover {
+    background: #cc3b3b; /* Σκούρο κόκκινο για hover */
+}

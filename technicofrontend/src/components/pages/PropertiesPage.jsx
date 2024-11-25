@@ -1,104 +1,139 @@
-import React, { useState, useEffect } from 'react';
-import { getProperties, createProperty } from '../../api/propertyApi';
-import './PropertiesPage.css';
+import React, { useState, useEffect } from "react";
+import {
+  getProperties,
+  createProperty,
+  updateProperty,
+  deleteProperty,
+} from "../../api/propertyApi";
+import "./PropertiesPage.css";
 
 function PropertiesPage() {
-    const [properties, setProperties] = useState([]);
-    const [formData, setFormData] = useState({
-        identificationNumber: '',
-        address: '',
-        yearOfConstruction: '',
+  const [properties, setProperties] = useState([]);
+  const [formData, setFormData] = useState({
+    identificationNumber: "",
+    address: "",
+    yearOfConstruction: "",
+  });
+  const [editMode, setEditMode] = useState(false);
+  const [editId, setEditId] = useState(null);
+
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const data = await getProperties();
+        setProperties(data);
+      } catch (error) {
+        console.error("Error fetching properties:", error);
+      }
+    };
+    fetchProperties();
+  }, []);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      if (editMode) {
+        await updateProperty(editId, formData);
+        alert("Η ιδιοκτησία ενημερώθηκε με επιτυχία!");
+      } else {
+        await createProperty(formData);
+        alert("Η ιδιοκτησία προστέθηκε με επιτυχία!");
+      }
+      setFormData({
+        identificationNumber: "",
+        address: "",
+        yearOfConstruction: "",
+      });
+      setEditMode(false);
+      setEditId(null);
+      const data = await getProperties();
+      setProperties(data);
+    } catch (error) {
+      console.error("Error saving property:", error);
+    }
+  };
+
+  const handleEdit = (property) => {
+    setEditMode(true);
+    setEditId(property.id);
+    setFormData({
+      identificationNumber: property.identificationNumber,
+      address: property.address,
+      yearOfConstruction: property.yearOfConstruction,
     });
+  };
 
-    useEffect(() => {
-        const fetchProperties = async () => {
-            try {
-                const data = await getProperties();
-                setProperties(data);
-            } catch (error) {
-                console.error('Error fetching properties:', error);
-            }
-        };
-        fetchProperties();
-    }, []);
+  const handleDelete = async (id) => {
+    try {
+      await deleteProperty(id);
+      alert("Η ιδιοκτησία διαγράφηκε με επιτυχία!");
+      const data = await getProperties();
+      setProperties(data);
+    } catch (error) {
+      console.error("Error deleting property:", error);
+    }
+  };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
+  return (
+    <div className="properties-center-container">
+      <div className="properties-form-container">
+        <h1>{editMode ? "Επεξεργασία Ιδιοκτησίας" : "Προσθήκη Ιδιοκτησίας"}</h1>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="identificationNumber"
+            placeholder="Αριθμός Ταυτότητας"
+            value={formData.identificationNumber}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="address"
+            placeholder="Διεύθυνση"
+            value={formData.address}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="number"
+            name="yearOfConstruction"
+            placeholder="Έτος Κατασκευής"
+            value={formData.yearOfConstruction}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit" className="properties-submit-button">
+            {editMode ? "Ενημέρωση" : "Προσθήκη"}
+          </button>
+        </form>
+      </div>
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await createProperty(formData);
-            alert('Property created successfully!');
-            setFormData({ identificationNumber: '', address: '', yearOfConstruction: '' });
-            const data = await getProperties();
-            setProperties(data);
-        } catch (error) {
-            console.error('Error creating property:', error);
-            alert('Failed to create property. Please try again.');
-        }
-    };
-
-    return (
-        <div className="properties-center-container">
-            <div className="properties-form-container">
-                <h1>Manage Properties</h1>
-                <form onSubmit={handleSubmit}>
-                    <label htmlFor="identificationNumber">Identification Number</label>
-                    <input
-                        type="text"
-                        id="identificationNumber"
-                        name="identificationNumber"
-                        placeholder="Enter ID Number"
-                        value={formData.identificationNumber}
-                        onChange={handleChange}
-                        required
-                    />
-
-                    <label htmlFor="address">Address</label>
-                    <input
-                        type="text"
-                        id="address"
-                        name="address"
-                        placeholder="Enter Address"
-                        value={formData.address}
-                        onChange={handleChange}
-                        required
-                    />
-
-                    <label htmlFor="yearOfConstruction">Year of Construction</label>
-                    <input
-                        type="number"
-                        id="yearOfConstruction"
-                        name="yearOfConstruction"
-                        placeholder="Enter Year"
-                        value={formData.yearOfConstruction}
-                        onChange={handleChange}
-                        required
-                    />
-
-                    <button type="submit">Create Property</button>
-                </form>
+      <div className="properties-list">
+        <h2>Λίστα Ιδιοκτησιών</h2>
+        {properties.length > 0 ? (
+          properties.map((property) => (
+            <div key={property.id} className="property-item">
+              <h3>{property.identificationNumber}</h3>
+              <p>{property.address}</p>
+              <p>Έτος: {property.yearOfConstruction}</p>
+              <button onClick={() => handleEdit(property)}>Επεξεργασία</button>
+              <button onClick={() => handleDelete(property.id)}>
+                Διαγραφή
+              </button>
             </div>
-
-            <div className="properties-list">
-                <h2>Property List</h2>
-                {properties.length > 0 ? (
-                    properties.map((property) => (
-                        <div key={property.id} className="property-item">
-                            <h3>Identification Number: {property.identificationNumber}</h3>
-                            <p>Address: {property.address}</p>
-                            <p>Year of Construction: {property.yearOfConstruction}</p>
-                        </div>
-                    ))
-                ) : (
-                    <p>No properties available.</p>
-                )}
-            </div>
-        </div>
-    );
+          ))
+        ) : (
+          <p>Δεν υπάρχουν ιδιοκτησίες.</p>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default PropertiesPage;
