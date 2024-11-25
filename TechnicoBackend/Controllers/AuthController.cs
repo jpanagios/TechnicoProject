@@ -1,42 +1,55 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TechnicoBackend.Interfaces;
 using TechnicoBackend.Models;
+using TechnicoBackend.Repositories;
+using TechnicoBackend.DTOs;
 
 namespace TechnicoBackend.Controllers
 {
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly IUserRepository _repository;
+        private readonly UserRepository _userRepository;
 
-        public AuthController(IUserRepository repository)
+        public AuthController(UserRepository userRepository)
         {
-            _repository = repository;
+            _userRepository = userRepository;
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] User user)
+        public async Task<IActionResult> Register(UserDTO userDto)
         {
-            if (await _repository.UserExistsAsync(user.Email))
+            var existingUsers = await _userRepository.GetAllAsync();
+            if (existingUsers.Any(u => u.Email == userDto.Email))
             {
-                return BadRequest("User already exists.");
+                return BadRequest("Το email χρησιμοποιείται ήδη.");
             }
 
-            await _repository.AddUserAsync(user);
-            return Ok("User registered successfully.");
+            var user = new User
+            {
+                Email = userDto.Email ?? throw new ArgumentNullException(nameof(userDto.Email)),
+                PhoneNumber = userDto.PhoneNumber ?? throw new ArgumentNullException(nameof(userDto.PhoneNumber)),
+                FullName = userDto.FullName ?? throw new ArgumentNullException(nameof(userDto.FullName)),
+                Password = userDto.Password ?? throw new ArgumentNullException(nameof(userDto.Password))
+            };
+
+            await _userRepository.AddAsync(user);
+
+            return Ok(new { Message = "Η εγγραφή ολοκληρώθηκε με επιτυχία." });
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] User user)
+        public async Task<IActionResult> Login(LoginDTO loginDto)
         {
-            var validUser = await _repository.ValidateCredentialsAsync(user.Email, user.Password);
-            if (validUser == null)
+            var users = await _userRepository.GetAllAsync();
+            var user = users.FirstOrDefault(u => u.Email == loginDto.Email && u.Password == loginDto.Password);
+
+            if (user == null)
             {
-                return Unauthorized("Invalid credentials.");
+                return Unauthorized("Λάθος email ή κωδικός πρόσβασης.");
             }
 
-            return Ok("Login successful.");
+            return Ok(new { Token = "dummy-token-for-now" });
         }
     }
 }

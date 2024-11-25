@@ -1,13 +1,18 @@
-﻿namespace TechnicoBackend.DTOs
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+public class RepairDTO
 {
-    public class RepairDto
-    {
-        public int Id { get; set; }
-        public DateTime ScheduledDate { get; set; }
-        public string? TypeOfRepair { get; set; }
-        public string? Description { get; set; }
-        public string? Address { get; set; }
-        public string Status { get; set; } = "Pending";
-        public decimal Cost { get; set; }
-    }
+    [Required]
+    public string? Description { get; set; }
+
+    [Required]
+    public DateTime? RepairDate { get; set; }
+
+    [Required]
+    [Range(0, double.MaxValue, ErrorMessage = "Το κόστος πρέπει να είναι θετικό.")]
+    public decimal? Cost { get; set; }
+
+    [Required]
+    public Guid PropertyId { get; set; }
 }

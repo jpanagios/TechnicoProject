@@ -8,25 +8,25 @@ namespace TechnicoBackend.Controllers
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class RepairController : ControllerBase
+    public class PropertyController : ControllerBase
     {
-        private readonly RepairService _repairService;
+        private readonly PropertyService _propertyService;
 
-        public RepairController(RepairService repairService)
+        public PropertyController(PropertyService propertyService)
         {
-            _repairService = repairService;
+            _propertyService = propertyService;
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetRepair(Guid id)
+        public async Task<IActionResult> GetProperty(Guid id)
         {
             try
             {
                 var userId = Guid.Parse(User.FindFirst("sub")?.Value ?? throw new UnauthorizedAccessException());
                 var userType = User.FindFirst("role")?.Value ?? throw new UnauthorizedAccessException();
 
-                var repair = await _repairService.GetRepairByIdAsync(id, userId, userType);
-                return Ok(repair);
+                var property = await _propertyService.GetPropertyByIdAsync(id, userId, userType);
+                return Ok(property);
             }
             catch (UnauthorizedAccessException ex)
             {
@@ -39,19 +39,12 @@ namespace TechnicoBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRepair(Repair repair)
+        public async Task<IActionResult> CreateProperty(Property property)
         {
             try
             {
-                var userId = Guid.Parse(User.FindFirst("sub")?.Value ?? throw new UnauthorizedAccessException());
-                var userType = User.FindFirst("role")?.Value ?? throw new UnauthorizedAccessException();
-
-                await _repairService.AddRepairAsync(repair, userId, userType);
-                return CreatedAtAction(nameof(GetRepair), new { id = repair.Id }, repair);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Forbid(ex.Message);
+                await _propertyService.AddPropertyAsync(property);
+                return CreatedAtAction(nameof(GetProperty), new { id = property.Id }, property);
             }
             catch (Exception ex)
             {
@@ -60,15 +53,15 @@ namespace TechnicoBackend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRepair(Guid id, Repair repair)
+        public async Task<IActionResult> UpdateProperty(Guid id, Property property)
         {
             try
             {
                 var userId = Guid.Parse(User.FindFirst("sub")?.Value ?? throw new UnauthorizedAccessException());
                 var userType = User.FindFirst("role")?.Value ?? throw new UnauthorizedAccessException();
 
-                repair.Id = id;
-                await _repairService.UpdateRepairAsync(repair, userId, userType);
+                property.Id = id;
+                await _propertyService.UpdatePropertyAsync(property, userId, userType);
                 return NoContent();
             }
             catch (UnauthorizedAccessException ex)
@@ -82,14 +75,14 @@ namespace TechnicoBackend.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteRepair(Guid id)
+        public async Task<IActionResult> DeleteProperty(Guid id)
         {
             try
             {
                 var userId = Guid.Parse(User.FindFirst("sub")?.Value ?? throw new UnauthorizedAccessException());
                 var userType = User.FindFirst("role")?.Value ?? throw new UnauthorizedAccessException();
 
-                await _repairService.DeleteRepairAsync(id, userId, userType);
+                await _propertyService.DeletePropertyAsync(id, userId, userType);
                 return NoContent();
             }
             catch (UnauthorizedAccessException ex)

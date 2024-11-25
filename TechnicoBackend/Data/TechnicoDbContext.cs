@@ -7,35 +7,35 @@ namespace TechnicoBackend.Data
     {
         public TechnicoDbContext(DbContextOptions<TechnicoDbContext> options) : base(options) { }
 
-        // Υπάρχοντα DbSet
-        public DbSet<PropertyOwner> PropertyOwners { get; set; } = null!;
-        public DbSet<PropertyItem> PropertyItems { get; set; } = null!;
-        public DbSet<Repair> Repairs { get; set; } = null!;
-        public DbSet<PropertyOwnerPropertyItem> PropertyOwnerPropertyItems { get; set; } = null!;
-
-        // Νέο DbSet για το User
         public DbSet<User> Users { get; set; } = null!;
+        public DbSet<Property> Properties { get; set; } = null!;
+        public DbSet<Repair> Repairs { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Σχέσεις για PropertyOwnerPropertyItem
-            modelBuilder.Entity<PropertyOwnerPropertyItem>()
-                .HasKey(p => new { p.PropertyOwnerId, p.PropertyItemId });
+            modelBuilder.Entity<Property>()
+                .HasOne(p => p.User)
+                .WithMany(u => u.Properties)
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<PropertyOwnerPropertyItem>()
-                .HasOne(po => po.PropertyOwner)
-                .WithMany(po => po.PropertyOwnerPropertyItems)
-                .HasForeignKey(po => po.PropertyOwnerId);
+            modelBuilder.Entity<Repair>()
+                .HasOne(r => r.Property)
+                .WithMany(p => p.Repairs)
+                .HasForeignKey(r => r.PropertyId)
+                .OnDelete(DeleteBehavior.Cascade);
 
-            modelBuilder.Entity<PropertyOwnerPropertyItem>()
-                .HasOne(pi => pi.PropertyItem)
-                .WithMany(pi => pi.PropertyOwnerPropertyItems)
-                .HasForeignKey(pi => pi.PropertyItemId);
-
-            // Ρύθμιση για User (προαιρετικά indexes, unique constraints)
             modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email)
-                .IsUnique(); // Το Email πρέπει να είναι μοναδικό
+                .HasIndex(u => u.Email).IsUnique();
+
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.PhoneNumber).IsUnique();
+
+            modelBuilder.Entity<Property>()
+                .HasIndex(p => new { p.UserId, p.Address }).IsUnique();
+
+            modelBuilder.Entity<Repair>()
+                .HasIndex(r => new { r.PropertyId, r.RepairDate }).IsUnique();
         }
     }
 }

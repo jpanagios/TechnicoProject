@@ -1,60 +1,63 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using TechnicoBackend.Data;
-using TechnicoBackend.Interfaces;
 using TechnicoBackend.Models;
 
 namespace TechnicoBackend.Repositories
 {
-    public class RepairRepository : IRepairRepository
+    public class RepairRepository
     {
         private readonly TechnicoDbContext _context;
-        private readonly ILogger<RepairRepository> _logger;
 
-        public RepairRepository(TechnicoDbContext context, ILogger<RepairRepository> logger)
+        public RepairRepository(TechnicoDbContext context)
         {
             _context = context;
-            _logger = logger;
         }
 
-        public async Task<IEnumerable<Repair>> GetAllAsync()
+        public async Task<Repair?> GetByIdAsync(Guid id)
         {
-            _logger.LogInformation("Fetching all repairs from the database.");
-            return await _context.Repairs.ToListAsync();
+            return await _context.Repairs
+                .Include(r => r.Property)
+                .FirstOrDefaultAsync(r => r.Id == id);
         }
 
-        public async Task<Repair?> GetByIdAsync(int id)
+        public async Task<List<Repair>> GetAllAsync()
         {
-            _logger.LogInformation($"Fetching repair with ID {id}.");
-            return await _context.Repairs.FindAsync(id);
+            return await _context.Repairs
+                .Include(r => r.Property)
+                .ToListAsync();
+        }
+
+        public async Task<List<Repair>> GetAllByUserIdAsync(Guid userId)
+        {
+            return await _context.Repairs
+                .Include(r => r.Property)
+                .Where(r => r.Property != null && r.Property.UserId == userId)
+                .ToListAsync();
         }
 
         public async Task AddAsync(Repair repair)
         {
-            _logger.LogInformation("Adding a new repair to the database.");
-            _context.Repairs.Add(repair);
+            await _context.Repairs.AddAsync(repair);
             await _context.SaveChangesAsync();
         }
 
         public async Task UpdateAsync(Repair repair)
         {
-            _logger.LogInformation($"Updating repair with ID {repair.Id}.");
             _context.Repairs.Update(repair);
             await _context.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(Guid id)
         {
-            _logger.LogInformation($"Deleting repair with ID {id}.");
             var repair = await GetByIdAsync(id);
             if (repair != null)
             {
                 _context.Repairs.Remove(repair);
                 await _context.SaveChangesAsync();
-            }
-            else
-            {
-                _logger.LogError($"Repair with ID {id} not found for deletion.");
             }
         }
     }

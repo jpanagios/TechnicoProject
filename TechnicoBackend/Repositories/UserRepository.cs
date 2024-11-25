@@ -1,11 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TechnicoBackend.Data;
-using TechnicoBackend.Interfaces;
 using TechnicoBackend.Models;
 
 namespace TechnicoBackend.Repositories
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository
     {
         private readonly TechnicoDbContext _context;
 
@@ -14,20 +13,42 @@ namespace TechnicoBackend.Repositories
             _context = context;
         }
 
-        public async Task<User?> ValidateCredentialsAsync(string email, string password)
+        public async Task<User?> GetByIdAsync(Guid id)
         {
-            return await _context.Users.FirstOrDefaultAsync(u => u.Email == email && u.Password == password);
+            return await _context.Users
+                .Include(u => u.Properties)
+                .ThenInclude(p => p.Repairs)
+                .FirstOrDefaultAsync(u => u.Id == id);
         }
 
-        public async Task<bool> UserExistsAsync(string email)
+        public async Task<List<User>> GetAllAsync()
         {
-            return await _context.Users.AnyAsync(u => u.Email == email);
+            return await _context.Users
+                .Include(u => u.Properties)
+                .ThenInclude(p => p.Repairs)
+                .ToListAsync();
         }
 
-        public async Task AddUserAsync(User user)
+        public async Task AddAsync(User user)
         {
-            _context.Users.Add(user);
+            await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateAsync(User user)
+        {
+            _context.Users.Update(user);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(Guid id)
+        {
+            var user = await GetByIdAsync(id);
+            if (user != null)
+            {
+                _context.Users.Remove(user);
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

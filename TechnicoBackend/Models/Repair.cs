@@ -1,15 +1,18 @@
-﻿namespace TechnicoBackend.Models
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+
+namespace TechnicoBackend.Models
 {
     public class Repair
     {
-        public int Id { get; set; }
-        public DateTime ScheduledDate { get; set; }
-        public string? TypeOfRepair { get; set; }
+        public Guid Id { get; set; } = Guid.NewGuid();
+
+        [Required]
         public string? Description { get; set; }
-        public string? Address { get; set; }
-        public string Status { get; set; } = "Pending";
-        public decimal Cost { get; set; }
-        public int PropertyItemId { get; set; }
-        public PropertyItem? PropertyItem { get; set; }
+
+        public DateTime RepairDate { get; set; } = DateTime.UtcNow;
+
+        public Guid PropertyId { get; set; }
+        public Property? Property { get; set; }
     }
 }
