@@ -1,13 +1,13 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { register } from "../../api/userApi";
+import { register } from "../../api/authApi";
 import "./RegisterPage.css";
 
 function RegisterPage() {
   const [formData, setFormData] = useState({
     vatNumber: "",
-    name: "",
-    surname: "",
+    firstName: "",
+    lastName: "",
     address: "",
     phoneNumber: "",
     email: "",
@@ -26,14 +26,7 @@ function RegisterPage() {
     e.preventDefault();
     setError("");
     try {
-      const response = await register({
-        vatNumber: formData.vatNumber,
-        fullName: `${formData.name} ${formData.surname}`,
-        address: formData.address,
-        phoneNumber: formData.phoneNumber,
-        email: formData.email,
-        password: formData.password,
-      });
+      const response = await register(formData);
       if (response) {
         alert("Εγγραφή επιτυχής!");
         navigate("/");
@@ -76,29 +69,29 @@ function RegisterPage() {
               onChange={handleChange}
               required
             />
-            <label className="register-page-label" htmlFor="name">
+            <label className="register-page-label" htmlFor="firstName">
               Όνομα:
             </label>
             <input
               className="register-page-input"
               type="text"
-              id="name"
-              name="name"
+              id="firstName"
+              name="firstName"
               placeholder="Εισάγετε το όνομά σας"
-              value={formData.name}
+              value={formData.firstName}
               onChange={handleChange}
               required
             />
-            <label className="register-page-label" htmlFor="surname">
+            <label className="register-page-label" htmlFor="lastName">
               Επώνυμο:
             </label>
             <input
               className="register-page-input"
               type="text"
-              id="surname"
-              name="surname"
+              id="lastName"
+              name="lastName"
               placeholder="Εισάγετε το επώνυμό σας"
-              value={formData.surname}
+              value={formData.lastName}
               onChange={handleChange}
               required
             />

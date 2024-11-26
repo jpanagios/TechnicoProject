@@ -37,9 +37,10 @@ namespace TechnicoBackend.Controllers
             {
                 Email = userDto.Email,
                 PhoneNumber = userDto.PhoneNumber,
-                FullName = userDto.FullName,
-                Password = userDto.Password, // Βεβαιώσου ότι κρυπτογραφείς τους κωδικούς
-                UserType = "PropertyOwner" // Default τύπος χρήστη
+                FirstName = userDto.FirstName ?? string.Empty, // Χρήση του FirstName
+                LastName = userDto.LastName ?? string.Empty,   // Χρήση του LastName
+                Password = userDto.Password ?? string.Empty,  // Βεβαιώσου ότι κρυπτογραφείς τους κωδικούς
+                UserType = "PropertyOwner"    // Default τύπος χρήστη
             };
 
             await _userRepository.AddAsync(user);

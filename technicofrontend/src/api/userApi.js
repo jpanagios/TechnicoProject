@@ -1,32 +1,47 @@
 import api from './axios';
 
 /**
- * Συνάρτηση σύνδεσης χρήστη.
- * @param {string} email - Το email του χρήστη.
- * @param {string} password - Ο κωδικός του χρήστη.
- * @returns {Promise<Object>} - Επιστρέφει το token από το backend.
+ * Ανάκτηση στοιχείων χρήστη.
+ * @param {string} id - Το ID του χρήστη.
+ * @returns {Promise<Object>} - Επιστρέφει τα δεδομένα του χρήστη.
  */
-export const login = async (email, password) => {
+export const getUser = async (id) => {
     try {
-        const response = await api.post('/auth/login', { email, password });
+        const response = await api.get(`/users/${id}`);
         return response.data;
     } catch (error) {
-        console.error('Σφάλμα κατά τη σύνδεση:', error);
+        console.error('Σφάλμα κατά την ανάκτηση στοιχείων χρήστη:', error);
         throw error;
     }
 };
 
 /**
- * Συνάρτηση εγγραφής χρήστη.
- * @param {Object} userData - Τα δεδομένα του χρήστη για εγγραφή.
- * @returns {Promise<Object>} - Επιστρέφει μήνυμα επιτυχίας ή σφάλματος.
+ * Ενημέρωση στοιχείων χρήστη.
+ * @param {string} id - Το ID του χρήστη.
+ * @param {Object} userData - Τα νέα δεδομένα του χρήστη.
+ * @returns {Promise<Object>} - Επιστρέφει τα ενημερωμένα δεδομένα του χρήστη.
  */
-export const register = async (userData) => {
+export const updateUser = async (id, userData) => {
     try {
-        const response = await api.post('/auth/register', userData);
+        const response = await api.put(`/users/${id}`, userData);
         return response.data;
     } catch (error) {
-        console.error('Σφάλμα κατά την εγγραφή:', error);
+        console.error('Σφάλμα κατά την ενημέρωση στοιχείων χρήστη:', error);
+        throw error;
+    }
+};
+
+/**
+ * Διαγραφή χρήστη.
+ * @param {string} id - Το ID του χρήστη.
+ * @returns {Promise<Object>} - Επιστρέφει μήνυμα επιτυχίας ή σφάλματος.
+ */
+export const deleteUser = async (id) => {
+    try {
+        const response = await api.delete(`/users/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Σφάλμα κατά τη διαγραφή χρήστη:', error);
         throw error;
     }
 };

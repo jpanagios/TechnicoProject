@@ -13,9 +13,15 @@ namespace TechnicoBackend.DTOs
         public string? PhoneNumber { get; set; }
 
         [Required]
-        public string? FullName { get; set; }
+        public string? FirstName { get; set; }
 
         [Required]
-        public string? Password { get; set; } 
+        public string? LastName { get; set; }
+
+        [Required]
+        public string? Password { get; set; }
+
+        [Required]
+        public string? VatNumber { get; set; }
     }
 }

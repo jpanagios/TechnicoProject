@@ -12,8 +12,8 @@ using TechnicoBackend.Data;
 namespace TechnicoBackend.Migrations
 {
     [DbContext(typeof(TechnicoDbContext))]
-    [Migration("20241125104527_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241126093515_NewDB")]
+    partial class NewDB
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -88,7 +88,11 @@ namespace TechnicoBackend.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("FullName")
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 

@@ -5,7 +5,7 @@
 namespace TechnicoBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class NewStructure : Migration
+    public partial class newDatabase : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
