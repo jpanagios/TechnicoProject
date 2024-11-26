@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TechnicoBackend.Services;
 using TechnicoBackend.Models;
+using System.Security.Claims;
 
 namespace TechnicoBackend.Controllers
 {
-    [ApiController]
+    [ApiController] // Μόνο μία φορά εδώ
     [Route("api/[controller]")]
-    [Authorize]
     public class RepairController : ControllerBase
     {
         private readonly RepairService _repairService;
@@ -22,29 +21,33 @@ namespace TechnicoBackend.Controllers
         {
             try
             {
-                var userId = Guid.Parse(User.FindFirst("sub")?.Value ?? throw new UnauthorizedAccessException());
-                var userType = User.FindFirst("role")?.Value ?? throw new UnauthorizedAccessException();
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
+                var userType = User.FindFirst(ClaimTypes.Role)?.Value ?? "User";
 
                 var repair = await _repairService.GetRepairByIdAsync(id, userId, userType);
                 return Ok(repair);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Forbid(ex.Message);
             }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
             }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Forbid(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateRepair(Repair repair)
+        public async Task<IActionResult> AddRepair(Repair repair)
         {
             try
             {
-                var userId = Guid.Parse(User.FindFirst("sub")?.Value ?? throw new UnauthorizedAccessException());
-                var userType = User.FindFirst("role")?.Value ?? throw new UnauthorizedAccessException();
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
+                var userType = User.FindFirst(ClaimTypes.Role)?.Value ?? "User";
 
                 await _repairService.AddRepairAsync(repair, userId, userType);
                 return CreatedAtAction(nameof(GetRepair), new { id = repair.Id }, repair);
@@ -64,20 +67,24 @@ namespace TechnicoBackend.Controllers
         {
             try
             {
-                var userId = Guid.Parse(User.FindFirst("sub")?.Value ?? throw new UnauthorizedAccessException());
-                var userType = User.FindFirst("role")?.Value ?? throw new UnauthorizedAccessException();
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
+                var userType = User.FindFirst(ClaimTypes.Role)?.Value ?? "User";
 
                 repair.Id = id;
                 await _repairService.UpdateRepairAsync(repair, userId, userType);
                 return NoContent();
             }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
+            }
             catch (UnauthorizedAccessException ex)
             {
                 return Forbid(ex.Message);
             }
-            catch (KeyNotFoundException ex)
+            catch (Exception ex)
             {
-                return NotFound(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -86,19 +93,23 @@ namespace TechnicoBackend.Controllers
         {
             try
             {
-                var userId = Guid.Parse(User.FindFirst("sub")?.Value ?? throw new UnauthorizedAccessException());
-                var userType = User.FindFirst("role")?.Value ?? throw new UnauthorizedAccessException();
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
+                var userType = User.FindFirst(ClaimTypes.Role)?.Value ?? "User";
 
                 await _repairService.DeleteRepairAsync(id, userId, userType);
                 return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (UnauthorizedAccessException ex)
             {
                 return Forbid(ex.Message);
             }
-            catch (KeyNotFoundException ex)
+            catch (Exception ex)
             {
-                return NotFound(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
     }

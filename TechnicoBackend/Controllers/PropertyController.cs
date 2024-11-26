@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using TechnicoBackend.Services;
 using TechnicoBackend.Models;
+using System.Security.Claims;
 
 namespace TechnicoBackend.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class PropertyController : ControllerBase
     {
         private readonly PropertyService _propertyService;
@@ -22,19 +21,23 @@ namespace TechnicoBackend.Controllers
         {
             try
             {
-                var userId = Guid.Parse(User.FindFirst("sub")?.Value ?? throw new UnauthorizedAccessException());
-                var userType = User.FindFirst("role")?.Value ?? throw new UnauthorizedAccessException();
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
+                var userType = User.FindFirst(ClaimTypes.Role)?.Value ?? "User";
 
                 var property = await _propertyService.GetPropertyByIdAsync(id, userId, userType);
                 return Ok(property);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (UnauthorizedAccessException ex)
             {
                 return Forbid(ex.Message);
             }
-            catch (KeyNotFoundException ex)
+            catch (Exception ex)
             {
-                return NotFound(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -57,20 +60,25 @@ namespace TechnicoBackend.Controllers
         {
             try
             {
-                var userId = Guid.Parse(User.FindFirst("sub")?.Value ?? throw new UnauthorizedAccessException());
-                var userType = User.FindFirst("role")?.Value ?? throw new UnauthorizedAccessException();
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
+                var userType = User.FindFirst(ClaimTypes.Role)?.Value ?? "User";
 
                 property.Id = id;
+
                 await _propertyService.UpdatePropertyAsync(property, userId, userType);
                 return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (UnauthorizedAccessException ex)
             {
                 return Forbid(ex.Message);
             }
-            catch (KeyNotFoundException ex)
+            catch (Exception ex)
             {
-                return NotFound(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
 
@@ -79,19 +87,23 @@ namespace TechnicoBackend.Controllers
         {
             try
             {
-                var userId = Guid.Parse(User.FindFirst("sub")?.Value ?? throw new UnauthorizedAccessException());
-                var userType = User.FindFirst("role")?.Value ?? throw new UnauthorizedAccessException();
+                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
+                var userType = User.FindFirst(ClaimTypes.Role)?.Value ?? "User";
 
                 await _propertyService.DeletePropertyAsync(id, userId, userType);
                 return NoContent();
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(ex.Message);
             }
             catch (UnauthorizedAccessException ex)
             {
                 return Forbid(ex.Message);
             }
-            catch (KeyNotFoundException ex)
+            catch (Exception ex)
             {
-                return NotFound(ex.Message);
+                return BadRequest(ex.Message);
             }
         }
     }

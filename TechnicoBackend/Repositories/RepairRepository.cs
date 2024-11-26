@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using TechnicoBackend.Data;
 using TechnicoBackend.Models;
 
@@ -35,7 +35,7 @@ namespace TechnicoBackend.Repositories
         {
             return await _context.Repairs
                 .Include(r => r.Property)
-                .Where(r => r.Property != null && r.Property.UserId == userId)
+                .Where(r => r.Property.UserId == userId) // Φιλτράρει με βάση τον UserId του Property
                 .ToListAsync();
         }
 

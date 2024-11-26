@@ -1,8 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using TechnicoBackend.Data;
 using TechnicoBackend.Models;
 
@@ -34,8 +34,8 @@ namespace TechnicoBackend.Repositories
         public async Task<List<Property>> GetAllByUserIdAsync(Guid userId)
         {
             return await _context.Properties
-                .Where(p => p.UserId == userId)
                 .Include(p => p.Repairs)
+                .Where(p => p.UserId == userId)
                 .ToListAsync();
         }
 

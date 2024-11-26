@@ -1,11 +1,11 @@
 import api from './axios';
 
 /**
- * Fetches all properties from the API.
+ * Επιστρέφει όλες τις ιδιοκτησίες από το API.
  */
 export const getProperties = async () => {
     try {
-        const response = await api.get('/PropertyItem');
+        const response = await api.get('/Property');
         return response.data;
     } catch (error) {
         console.error('Error fetching properties:', error);
@@ -14,12 +14,12 @@ export const getProperties = async () => {
 };
 
 /**
- * Creates a new property using the API.
- * @param {Object} property - The property data to create.
+ * Δημιουργεί νέα ιδιοκτησία μέσω του API.
+ * @param {Object} property - Τα δεδομένα της ιδιοκτησίας.
  */
 export const createProperty = async (property) => {
     try {
-        const response = await api.post('/PropertyItem', property);
+        const response = await api.post('/Property', property);
         return response.data;
     } catch (error) {
         console.error('Error creating property:', error);
@@ -28,12 +28,13 @@ export const createProperty = async (property) => {
 };
 
 /**
- * Updates an existing property using the API.
- * @param {Object} property - The property data to update.
+ * Ενημερώνει μια υπάρχουσα ιδιοκτησία μέσω του API.
+ * @param {string} id - Το ID της ιδιοκτησίας.
+ * @param {Object} property - Τα δεδομένα προς ενημέρωση.
  */
-export const updateProperty = async (property) => {
+export const updateProperty = async (id, property) => {
     try {
-        const response = await api.put(`/PropertyItem/${property.id}`, property);
+        const response = await api.put(`/Property/${id}`, property);
         return response.data;
     } catch (error) {
         console.error('Error updating property:', error);
@@ -42,12 +43,12 @@ export const updateProperty = async (property) => {
 };
 
 /**
- * Deletes a property using the API.
- * @param {number} id - The ID of the property to delete.
+ * Διαγράφει μια ιδιοκτησία μέσω του API.
+ * @param {string} id - Το ID της ιδιοκτησίας.
  */
 export const deleteProperty = async (id) => {
     try {
-        await api.delete(`/PropertyItem/${id}`);
+        await api.delete(`/Property/${id}`);
     } catch (error) {
         console.error('Error deleting property:', error);
         throw error;
