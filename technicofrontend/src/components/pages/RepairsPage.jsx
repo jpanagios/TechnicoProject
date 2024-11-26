@@ -1,128 +1,148 @@
-import React, { useState, useEffect } from 'react';
-import { getRepairs, createRepair } from '../../api/repairApi';
-import './RepairsPage.css';
+import React, { useState, useEffect } from "react";
+import { getRepairs, createRepair } from "../../api/repairApi";
+import "./RepairsPage.css";
 
 function RepairsPage() {
-    const [repairs, setRepairs] = useState([]);
-    const [formData, setFormData] = useState({
-        scheduledDate: '',
-        typeOfRepair: '',
-        description: '',
-        address: '',
-        cost: '',
-    });
+  const [repairs, setRepairs] = useState([]);
+  const [formData, setFormData] = useState({
+    scheduledDate: "",
+    typeOfRepair: "",
+    description: "",
+    address: "",
+    cost: "",
+    propertyId: "", // Νέο πεδίο για το μοναδικό κωδικό ιδιοκτησίας
+  });
 
-    useEffect(() => {
-        const fetchRepairs = async () => {
-            try {
-                const data = await getRepairs();
-                setRepairs(data);
-            } catch (error) {
-                console.error('Error fetching repairs:', error);
-            }
-        };
-        fetchRepairs();
-    }, []);
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+  useEffect(() => {
+    const fetchRepairs = async () => {
+      try {
+        const data = await getRepairs();
+        setRepairs(data);
+      } catch (error) {
+        console.error("Error fetching repairs:", error);
+      }
     };
+    fetchRepairs();
+  }, []);
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            await createRepair(formData);
-            alert('Repair created successfully!');
-            setFormData({ scheduledDate: '', typeOfRepair: '', description: '', address: '', cost: '' });
-            const data = await getRepairs();
-            setRepairs(data);
-        } catch (error) {
-            console.error('Error creating repair:', error);
-            alert('Failed to create repair. Please try again.');
-        }
-    };
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
 
-    return (
-        <div className="repairs-center-container">
-            <div className="repairs-form-container">
-                <h1>Manage Repairs</h1>
-                <form onSubmit={handleSubmit}>
-                    <label htmlFor="scheduledDate">Scheduled Date</label>
-                    <input
-                        type="date"
-                        id="scheduledDate"
-                        name="scheduledDate"
-                        value={formData.scheduledDate}
-                        onChange={handleChange}
-                        required
-                    />
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await createRepair(formData);
+      alert("Η επισκευή προστέθηκε επιτυχώς!");
+      setFormData({
+        scheduledDate: "",
+        typeOfRepair: "",
+        description: "",
+        address: "",
+        cost: "",
+        propertyId: "",
+      });
+      const data = await getRepairs();
+      setRepairs(data);
+    } catch (error) {
+      console.error("Error creating repair:", error);
+      alert("Αποτυχία δημιουργίας επισκευής. Προσπαθήστε ξανά.");
+    }
+  };
 
-                    <label htmlFor="typeOfRepair">Type of Repair</label>
-                    <input
-                        type="text"
-                        id="typeOfRepair"
-                        name="typeOfRepair"
-                        placeholder="Enter Repair Type"
-                        value={formData.typeOfRepair}
-                        onChange={handleChange}
-                        required
-                    />
+  return (
+    <div className="repairs-center-container">
+      {/* Φόρμα δημιουργίας/επεξεργασίας */}
+      <div className="repairs-form-container">
+        <h1>Προσθήκη Επισκευής</h1>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="propertyId"
+            placeholder="Μοναδικός Κωδικός Ιδιοκτησίας"
+            value={formData.propertyId}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="date"
+            name="scheduledDate"
+            placeholder="Ημερομηνία"
+            value={formData.scheduledDate}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="typeOfRepair"
+            placeholder="Τύπος Επισκευής"
+            value={formData.typeOfRepair}
+            onChange={handleChange}
+            required
+          />
+          <textarea
+            name="description"
+            placeholder="Περιγραφή"
+            value={formData.description}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="text"
+            name="address"
+            placeholder="Διεύθυνση"
+            value={formData.address}
+            onChange={handleChange}
+            required
+          />
+          <input
+            type="number"
+            name="cost"
+            placeholder="Κόστος"
+            value={formData.cost}
+            onChange={handleChange}
+            required
+          />
+          <button type="submit" className="repairs-submit-button">
+            Προσθήκη
+          </button>
+        </form>
+      </div>
 
-                    <label htmlFor="description">Description</label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        placeholder="Enter Description"
-                        value={formData.description}
-                        onChange={handleChange}
-                        required
-                    />
-
-                    <label htmlFor="address">Address</label>
-                    <input
-                        type="text"
-                        id="address"
-                        name="address"
-                        placeholder="Enter Address"
-                        value={formData.address}
-                        onChange={handleChange}
-                        required
-                    />
-
-                    <label htmlFor="cost">Cost</label>
-                    <input
-                        type="number"
-                        id="cost"
-                        name="cost"
-                        placeholder="Enter Cost"
-                        value={formData.cost}
-                        onChange={handleChange}
-                        required
-                    />
-
-                    <button type="submit">Create Repair</button>
-                </form>
+      {/* Λίστα επισκευών */}
+      <div className="repairs-list">
+        <h2>Λίστα Επισκευών</h2>
+        {repairs.length > 0 ? (
+          repairs.map((repair) => (
+            <div key={repair.id} className="repair-item">
+              <p>
+                <strong>Μοναδικός Κωδικός Ιδιοκτησίας:</strong>{" "}
+                {repair.propertyId}
+              </p>
+              <p>
+                <strong>Τύπος Επισκευής:</strong> {repair.typeOfRepair}
+              </p>
+              <p>
+                <strong>Ημερομηνία:</strong> {repair.scheduledDate}
+              </p>
+              <p>
+                <strong>Περιγραφή:</strong> {repair.description}
+              </p>
+              <p>
+                <strong>Διεύθυνση:</strong> {repair.address}
+              </p>
+              <p>
+                <strong>Κόστος:</strong> {repair.cost} €
+              </p>
             </div>
-
-            <div className="repairs-list">
-                <h2>Repair List</h2>
-                {repairs.length > 0 ? (
-                    repairs.map((repair) => (
-                        <div key={repair.id} className="repair-item">
-                            <h3>Type of Repair: {repair.typeOfRepair}</h3>
-                            <p>Scheduled Date: {repair.scheduledDate}</p>
-                            <p>Description: {repair.description}</p>
-                            <p>Address: {repair.address}</p>
-                            <p>Cost: {repair.cost}</p>
-                        </div>
-                    ))
-                ) : (
-                    <p>No repairs available.</p>
-                )}
-            </div>
-        </div>
-    );
+          ))
+        ) : (
+          <p>Δεν υπάρχουν διαθέσιμες επισκευές.</p>
+        )}
+      </div>
+    </div>
+  );
 }
 
 export default RepairsPage;
