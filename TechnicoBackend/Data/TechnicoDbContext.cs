@@ -5,43 +5,49 @@ namespace TechnicoBackend.Data
 {
     public class TechnicoDbContext : DbContext
     {
+        // Constructor
         public TechnicoDbContext(DbContextOptions<TechnicoDbContext> options) : base(options) { }
 
+        // DbSet για κάθε οντότητα
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Property> Properties { get; set; } = null!;
         public DbSet<Repair> Repairs { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Σχέση: User -> Property (1-N)
+            // Σχέση: User -> Property (One-to-Many)
             modelBuilder.Entity<Property>()
                 .HasOne(p => p.User)
                 .WithMany(u => u.Properties)
                 .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade); // Διαγραφή properties όταν διαγράφεται ο user
 
-            // Σχέση: Property -> Repair (1-N)
+            // Σχέση: Property -> Repair (One-to-Many)
             modelBuilder.Entity<Repair>()
                 .HasOne(r => r.Property)
                 .WithMany(p => p.Repairs)
                 .HasForeignKey(r => r.PropertyId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade); // Διαγραφή repairs όταν διαγράφεται το property
 
-            // Unique Constraint για Email στο User
+            // Μοναδικότητα στο Email του User
             modelBuilder.Entity<User>()
-                .HasIndex(u => u.Email).IsUnique();
+                .HasIndex(u => u.Email)
+                .IsUnique();
 
-            // Unique Constraint για PhoneNumber στο User
+            // Μοναδικότητα στο PhoneNumber του User
             modelBuilder.Entity<User>()
-                .HasIndex(u => u.PhoneNumber).IsUnique();
+                .HasIndex(u => u.PhoneNumber)
+                .IsUnique();
 
-            // Unique Constraint για Property (UserId και Address)
+            // Μοναδικότητα Property (UserId και Address)
             modelBuilder.Entity<Property>()
-                .HasIndex(p => new { p.UserId, p.Address }).IsUnique();
+                .HasIndex(p => new { p.UserId, p.Address })
+                .IsUnique();
 
-            // Unique Constraint για Repair (PropertyId και RepairDate)
+            // Μοναδικότητα Repair (PropertyId και RepairDate)
             modelBuilder.Entity<Repair>()
-                .HasIndex(r => new { r.PropertyId, r.RepairDate }).IsUnique();
+                .HasIndex(r => new { r.PropertyId, r.RepairDate })
+                .IsUnique();
         }
     }
 }

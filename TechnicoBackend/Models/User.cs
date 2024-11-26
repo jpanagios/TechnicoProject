@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace TechnicoBackend.Models
 {
@@ -7,23 +9,28 @@ namespace TechnicoBackend.Models
         public Guid Id { get; set; } = Guid.NewGuid();
 
         [Required]
-        public string FirstName { get; set; } = null!;
-
-        [Required]
-        public string LastName { get; set; } = null!;
-
-        [Required]
         [EmailAddress]
-        public string Email { get; set; } = null!;
+        public string Email { get; set; } = string.Empty;
 
         [Required]
-        public string PhoneNumber { get; set; } = null!;
+        [Phone]
+        public string PhoneNumber { get; set; } = string.Empty;
 
         [Required]
-        public string Password { get; set; } = null!;
+        public string FirstName { get; set; } = string.Empty;
 
         [Required]
-        public string UserType { get; set; } = "PropertyOwner";
+        public string LastName { get; set; } = string.Empty;
+
+        [Required]
+        public string Password { get; set; } = string.Empty;
+
+        // Προσθήκη του VatNumber
+        [Required]
+        [StringLength(15, ErrorMessage = "Ο ΑΦΜ πρέπει να είναι μέχρι 15 χαρακτήρες.")]
+        public string VatNumber { get; set; } = string.Empty;
+
+        public string UserType { get; set; } = "User";
 
         public ICollection<Property> Properties { get; set; } = new List<Property>();
     }

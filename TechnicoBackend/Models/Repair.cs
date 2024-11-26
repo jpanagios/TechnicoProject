@@ -10,8 +10,10 @@ namespace TechnicoBackend.Models
         [Required]
         public string? Description { get; set; }
 
-        public DateTime RepairDate { get; set; } = DateTime.UtcNow;
+        [Required]
+        public DateTime RepairDate { get; set; }
 
+        // Σχέση με Property
         public Guid PropertyId { get; set; }
         public Property? Property { get; set; }
     }

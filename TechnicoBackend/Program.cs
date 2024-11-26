@@ -1,4 +1,3 @@
-// Program.cs
 using Microsoft.EntityFrameworkCore;
 using TechnicoBackend.Data;
 using TechnicoBackend.Repositories;
@@ -38,18 +37,16 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-// Configure Swagger in development
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Configure Swagger for all environments (useful for testing)
+app.UseSwagger();
+app.UseSwaggerUI();
 
 // Middleware setup
 app.UseHttpsRedirection();
 app.UseCors("AllowFrontend");
 app.UseAuthorization();
 
+// Map Controllers
 app.MapControllers();
 
 app.Run();

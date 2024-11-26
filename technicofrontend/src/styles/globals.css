@@ -1,21 +1,25 @@
-/* Επαναφορά βασικών στοιχείων */
-html, body {
+body, html {
+    font-family: sans-serif; /* Προεπιλεγμένη γραμματοσειρά */
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* Περιλαμβάνει padding και border στα όρια */
-    font-family: Arial, sans-serif; /* Ενιαία γραμματοσειρά */
-    color: #333; /* Χρώμα κειμένου */
-    background: none; /* Καθαρό background */
+    background-color: #f4f4f4; /* Optional background color */
+    color: #333; /* Default text color */
 }
 
-/* Εφαρμογή σε όλα τα κείμενα */
 h1, h2, h3, h4, h5, h6, p, a, span, button, input, textarea {
-    font-family: Arial, sans-serif;
-    margin: 0; /* Αφαίρεση default περιθωρίου */
-    padding: 0; /* Αφαίρεση default padding */
+    font-family: sans-serif;
 }
 
-/* Κεντρικό container */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    color: #333;
+    background: none; 
+}
+
+
 .container {
     width: 400px;
     margin: 100px auto;
@@ -26,17 +30,15 @@ h1, h2, h3, h4, h5, h6, p, a, span, button, input, textarea {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Σχεδίαση κουμπιών */
 button {
     padding: 10px;
-    background-color: #257180; /* Χρώμα κουμπιού */
-    color: #fff; /* Χρώμα κειμένου */
-    border: none; /* Αφαίρεση default περιγράμματος */
+    background-color: #257180;
+    color: #fff;
+    border: none;
     border-radius: 4px;
-    cursor: pointer; /* Αλλαγή δείκτη σε χεράκι */
+    cursor: pointer;
 }
 
-/* Hover effect για κουμπιά */
 button:hover {
-    background-color: #1e5e60; /* Σκούρο χρώμα κατά το hover */
+    background-color: #1e5e60;
 }

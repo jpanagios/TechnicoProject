@@ -20,6 +20,7 @@ namespace TechnicoBackend.Models
         public Guid UserId { get; set; }
         public User? User { get; set; }
 
+        // Σχέση One-to-Many με Repairs
         public ICollection<Repair>? Repairs { get; set; } = new List<Repair>();
     }
 }

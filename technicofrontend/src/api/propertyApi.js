@@ -8,7 +8,21 @@ export const getProperties = async () => {
         const response = await api.get('/Property');
         return response.data;
     } catch (error) {
-        console.error('Error fetching properties:', error);
+        console.error('Σφάλμα κατά την ανάκτηση ιδιοκτησιών:', error.response?.data || error.message);
+        throw error;
+    }
+};
+
+/**
+ * Επιστρέφει μία συγκεκριμένη ιδιοκτησία από το API.
+ * @param {string} id - Το ID της ιδιοκτησίας.
+ */
+export const getPropertyById = async (id) => {
+    try {
+        const response = await api.get(`/Property/${id}`);
+        return response.data;
+    } catch (error) {
+        console.error('Σφάλμα κατά την ανάκτηση της ιδιοκτησίας:', error.response?.data || error.message);
         throw error;
     }
 };
@@ -22,7 +36,7 @@ export const createProperty = async (property) => {
         const response = await api.post('/Property', property);
         return response.data;
     } catch (error) {
-        console.error('Error creating property:', error);
+        console.error('Σφάλμα κατά τη δημιουργία της ιδιοκτησίας:', error.response?.data || error.message);
         throw error;
     }
 };
@@ -37,7 +51,7 @@ export const updateProperty = async (id, property) => {
         const response = await api.put(`/Property/${id}`, property);
         return response.data;
     } catch (error) {
-        console.error('Error updating property:', error);
+        console.error('Σφάλμα κατά την ενημέρωση της ιδιοκτησίας:', error.response?.data || error.message);
         throw error;
     }
 };
@@ -50,7 +64,7 @@ export const deleteProperty = async (id) => {
     try {
         await api.delete(`/Property/${id}`);
     } catch (error) {
-        console.error('Error deleting property:', error);
+        console.error('Σφάλμα κατά τη διαγραφή της ιδιοκτησίας:', error.response?.data || error.message);
         throw error;
     }
 };

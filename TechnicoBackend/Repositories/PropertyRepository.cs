@@ -20,22 +20,12 @@ namespace TechnicoBackend.Repositories
         public async Task<Property?> GetByIdAsync(Guid id)
         {
             return await _context.Properties
-                .Include(p => p.Repairs)
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task<List<Property>> GetAllAsync()
         {
             return await _context.Properties
-                .Include(p => p.Repairs)
-                .ToListAsync();
-        }
-
-        public async Task<List<Property>> GetAllByUserIdAsync(Guid userId)
-        {
-            return await _context.Properties
-                .Include(p => p.Repairs)
-                .Where(p => p.UserId == userId)
                 .ToListAsync();
         }
 

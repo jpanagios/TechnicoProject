@@ -13,11 +13,12 @@ function LoginPage() {
     e.preventDefault();
     setError("");
     try {
-      const { token } = await login(email, password);
-      if (token) {
-        localStorage.setItem("token", token);
+      const response = await login(email, password);
+      if (response.message === "Σύνδεση επιτυχής") {
         alert("Σύνδεση επιτυχής!");
         navigate("/home");
+      } else {
+        throw new Error("Σφάλμα σύνδεσης.");
       }
     } catch (error) {
       console.error("Σφάλμα σύνδεσης:", error);

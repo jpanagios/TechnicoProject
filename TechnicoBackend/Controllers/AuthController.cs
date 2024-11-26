@@ -19,38 +19,65 @@ namespace TechnicoBackend.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(UserDTO userDto)
         {
-            var users = await _userRepository.GetAllAsync();
-            if (users.Any(u => u.Email == userDto.Email))
+            try
             {
-                return BadRequest("Το email χρησιμοποιείται ήδη.");
+                var users = await _userRepository.GetAllAsync();
+                if (users.Any(u => u.Email == userDto.Email))
+                {
+                    return BadRequest("Το email χρησιμοποιείται ήδη.");
+                }
+
+                var user = new User
+                {
+                    Email = userDto.Email,
+                    PhoneNumber = userDto.PhoneNumber,
+                    FirstName = userDto.FirstName ?? string.Empty,
+                    LastName = userDto.LastName ?? string.Empty,
+                    Password = userDto.Password ?? string.Empty,
+                    VatNumber = userDto.VatNumber ?? string.Empty,
+                    UserType = "PropertyOwner"
+                };
+
+                await _userRepository.AddAsync(user);
+
+                // Επιστροφή του ID και μηνύματος επιτυχίας
+                return Ok(new
+                {
+                    Id = user.Id,
+                    Message = "Η εγγραφή ολοκληρώθηκε με επιτυχία."
+                });
             }
-
-            var user = new User
+            catch (Exception ex)
             {
-                Email = userDto.Email,
-                PhoneNumber = userDto.PhoneNumber,
-                FirstName = userDto.FirstName ?? string.Empty,
-                LastName = userDto.LastName ?? string.Empty,
-                Password = userDto.Password ?? string.Empty,
-                UserType = "PropertyOwner"
-            };
-
-            await _userRepository.AddAsync(user);
-            return Ok(new { Message = "Η εγγραφή ολοκληρώθηκε με επιτυχία." });
+                return BadRequest($"Σφάλμα κατά την εγγραφή: {ex.Message}");
+            }
         }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDTO loginDto)
         {
-            var users = await _userRepository.GetAllAsync();
-            var user = users.FirstOrDefault(u => u.Email == loginDto.Email && u.Password == loginDto.Password);
-
-            if (user == null)
+            try
             {
-                return Unauthorized("Λάθος email ή κωδικός πρόσβασης.");
-            }
+                var users = await _userRepository.GetAllAsync();
+                var user = users.FirstOrDefault(u => u.Email == loginDto.Email && u.Password == loginDto.Password);
 
-            return Ok(new { Message = "Σύνδεση επιτυχής" });
+                if (user == null)
+                {
+                    return Unauthorized("Λάθος email ή κωδικός πρόσβασης.");
+                }
+
+                return Ok(new
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Message = "Σύνδεση επιτυχής"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"Σφάλμα κατά τη σύνδεση: {ex.Message}");
+            }
         }
     }
 }

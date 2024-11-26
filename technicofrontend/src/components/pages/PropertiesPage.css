@@ -1,41 +1,40 @@
+/* Κεντρική περιοχή για τη φόρμα και τη λίστα */
 .properties-center-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start; /* Τοποθέτηση στην κορυφή */
     min-height: 100vh;
     background-image: url('../../assets/property_agree.png');
     background-size: cover;
     background-position: center;
     margin: 0;
     padding: 0;
+    overflow: hidden; /* Κλείσιμο overflow για το κεντρικό container */
 }
 
+/* Φόρμα */
 .properties-form-container {
-    width: 600px; /* Αυξημένο πλάτος */
-    padding: 30px; /* Περισσότερο padding για καλύτερη εμφάνιση */
+    width: 600px;
+    padding: 30px;
     background-color: #333;
     border-radius: 12px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
     margin-bottom: 40px;
     backdrop-filter: blur(10px);
-}
-
-.properties-form-container h1 {
-    font-size: 2rem;
-    margin-bottom: 20px;
-    color: #fff;
-    text-align: center;
+    position: sticky; /* Κάνει τη φόρμα "κολλημένη" στην κορυφή */
+    top: 20px; /* Απόσταση από την κορυφή της οθόνης */
+    z-index: 1; /* Τοποθετεί τη φόρμα πάνω από τα υπόλοιπα περιεχόμενα */
 }
 
 /* Στυλ για τα input πεδία */
 .properties-form-container input {
-    width: 93%; /* Να καλύπτει το 100% του γονέα */
-    padding: 15px; /* Μεγαλύτερο padding */
-    margin-bottom: 20px; /* Περισσότερο κενό ανάμεσα στα πεδία */
+    width: 93%;
+    padding: 15px;
+    margin-bottom: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    font-size: 16px; /* Μεγαλύτερη γραμματοσειρά */
+    font-size: 16px;
     background-color: #f9f9f9;
     color: #333;
 }
@@ -48,9 +47,9 @@
 
 /* Στυλ για το κουμπί */
 .properties-submit-button {
-    width: 100%; /* Καλύπτει το 100% */
-    padding: 15px; /* Μεγαλύτερο padding */
-    font-size: 16px; /* Μεγαλύτερη γραμματοσειρά */
+    width: 100%;
+    padding: 15px;
+    font-size: 16px;
     background-color: #005571;
     color: white;
     border: none;
@@ -68,26 +67,29 @@
     transform: translateY(-2px);
 }
 
+/* Λίστα Ιδιοκτησιών */
 .properties-list {
     width: 80%;
     max-width: 800px;
-    max-height: 60vh; /* Προσθέτουμε μέγιστο ύψος */
-    overflow-y: auto; /* Ενεργοποίηση scroll για το κάθετο ύψος */
+    max-height: 60vh; /* Μέγιστο ύψος για τη λίστα */
+    overflow-y: auto; /* Scroll όταν η λίστα ξεπερνά το μέγιστο ύψος */
     padding: 20px;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
+/* Στυλ για το scrollbar της λίστας */
 .properties-list::-webkit-scrollbar {
-    width: 8px; /* Πλάτος του scrollbar */
+    width: 8px;
 }
 
 .properties-list::-webkit-scrollbar-thumb {
-    background-color: #257180; /* Χρώμα του scrollbar */
-    border-radius: 4px; /* Στρογγυλεμένες άκρες */
+    background-color: #257180;
+    border-radius: 4px;
 }
 
+/* Στυλ για τα στοιχεία της λίστας (ιδιοκτησίες) */
 .property-item {
     margin-bottom: 15px;
     padding: 10px;
@@ -102,20 +104,37 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15); /* Ελαφριά σκιά */
 }
 
-.properties-form-container button {
-    width: 100%; /* Το κουμπί να ταιριάζει με το πλάτος της φόρμας */
-    padding: 15px; /* Αύξηση του padding για καλύτερη εμφάνιση */
-    background-color: #257180; /* Χρώμα κουμπιού */
-    color: #fff; /* Λευκό κείμενο */
+/* Στυλ για τα κουμπιά της λίστας */
+.edit-button,
+.delete-button {
+    margin-top: 10px;
+    padding: 10px 15px;
     border: none;
     border-radius: 4px;
-    font-size: 1rem;
-    font-weight: bold;
+    font-size: 14px;
     cursor: pointer;
-    text-align: center;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Ελαφριά σκιά */
+    text-transform: uppercase;
+    font-weight: bold;
+    transition: all 0.3s ease;
 }
 
-.properties-form-container button:hover {
-    background-color: #1e5e60; /* Σκούρο χρώμα στο hover */
+.edit-button {
+    background-color: #257180;
+    color: #fff;
+    margin-right: 10px;
+}
+
+.edit-button:hover {
+    background-color: #1e5e60;
+    transform: translateY(-1px);
+}
+
+.delete-button {
+    background-color: #cb6040;
+    color: #fff;
+}
+
+.delete-button:hover {
+    background-color: #a94c30;
+    transform: translateY(-1px);
 }

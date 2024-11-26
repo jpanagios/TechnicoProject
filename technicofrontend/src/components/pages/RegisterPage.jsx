@@ -1,166 +1,140 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { register } from "../../api/authApi";
-import "./RegisterPage.css";
+import React, { useState, useEffect } from "react";
+import {
+  getProperties,
+  createProperty,
+  updateProperty,
+  deleteProperty,
+} from "../../api/propertyApi";
+import PropertyForm from "../forms/PropertyForm";
+import "./PropertiesPage.css";
 
-function RegisterPage() {
+function PropertiesPage() {
+  const [properties, setProperties] = useState([]);
   const [formData, setFormData] = useState({
-    vatNumber: "",
-    firstName: "",
-    lastName: "",
     address: "",
-    phoneNumber: "",
-    email: "",
-    password: "",
+    city: "",
+    postalCode: "",
+    userId: "",
   });
+  const [editMode, setEditMode] = useState(false);
+  const [editId, setEditId] = useState(null);
 
-  const [error, setError] = useState("");
-  const navigate = useNavigate();
+  // Fetch properties when the component loads
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const data = await getProperties();
+        setProperties(data);
+      } catch (error) {
+        console.error("Error fetching properties:", error);
+      }
+    };
+    fetchProperties();
+  }, []);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
+  // Handle form submit for create/update
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError("");
     try {
-      const response = await register(formData);
-      if (response) {
-        alert("Εγγραφή επιτυχής!");
-        navigate("/");
-      }
-    } catch (error) {
-      if (error.response && error.response.data) {
-        setError(
-          error.response.data.message || "Η εγγραφή απέτυχε. Δοκιμάστε ξανά."
-        );
+      if (editMode) {
+        await updateProperty(editId, formData);
+        alert("Η ιδιοκτησία ενημερώθηκε με επιτυχία!");
       } else {
-        setError("Κάτι πήγε στραβά. Παρακαλώ δοκιμάστε ξανά.");
+        await createProperty(formData);
+        alert("Η ιδιοκτησία προστέθηκε με επιτυχία!");
       }
+      resetForm();
+      const data = await getProperties();
+      setProperties(data);
+    } catch (error) {
+      console.error("Error saving property:", error);
+    }
+  };
+
+  // Reset form to default state
+  const resetForm = () => {
+    setFormData({
+      address: "",
+      city: "",
+      postalCode: "",
+      userId: "",
+    });
+    setEditMode(false);
+    setEditId(null);
+  };
+
+  // Handle editing an existing property
+  const handleEdit = (property) => {
+    setEditMode(true);
+    setEditId(property.id);
+    setFormData({
+      address: property.address,
+      city: property.city,
+      postalCode: property.postalCode,
+      userId: property.userId,
+    });
+  };
+
+  // Handle deleting a property
+  const handleDelete = async (id) => {
+    try {
+      await deleteProperty(id);
+      alert("Η ιδιοκτησία διαγράφηκε με επιτυχία!");
+      const data = await getProperties();
+      setProperties(data);
+    } catch (error) {
+      console.error("Error deleting property:", error);
     }
   };
 
   return (
-    <div className="register-page-container">
-      <div className="register-page-left">
-        <img
-          src={require("../../assets/first_page.png")}
-          alt="Technico"
-          className="register-page-image"
+    <div className="properties-center-container">
+      <div className="properties-form-container">
+        <PropertyForm
+          onSubmit={handleSubmit}
+          formData={formData}
+          setFormData={setFormData}
+          isEditing={editMode}
         />
       </div>
-      <div className="register-page-right">
-        <div className="register-page-form-container">
-          <h2>Εγγραφή</h2>
-          {error && <p className="register-page-error">{error}</p>}
-          <form className="register-page-form" onSubmit={handleSubmit}>
-            <label className="register-page-label" htmlFor="vatNumber">
-              ΑΦΜ:
-            </label>
-            <input
-              className="register-page-input"
-              type="text"
-              id="vatNumber"
-              name="vatNumber"
-              placeholder="Εισάγετε το ΑΦΜ σας"
-              value={formData.vatNumber}
-              onChange={handleChange}
-              required
-            />
-            <label className="register-page-label" htmlFor="firstName">
-              Όνομα:
-            </label>
-            <input
-              className="register-page-input"
-              type="text"
-              id="firstName"
-              name="firstName"
-              placeholder="Εισάγετε το όνομά σας"
-              value={formData.firstName}
-              onChange={handleChange}
-              required
-            />
-            <label className="register-page-label" htmlFor="lastName">
-              Επώνυμο:
-            </label>
-            <input
-              className="register-page-input"
-              type="text"
-              id="lastName"
-              name="lastName"
-              placeholder="Εισάγετε το επώνυμό σας"
-              value={formData.lastName}
-              onChange={handleChange}
-              required
-            />
-            <label className="register-page-label" htmlFor="address">
-              Διεύθυνση:
-            </label>
-            <input
-              className="register-page-input"
-              type="text"
-              id="address"
-              name="address"
-              placeholder="Εισάγετε τη διεύθυνσή σας"
-              value={formData.address}
-              onChange={handleChange}
-              required
-            />
-            <label className="register-page-label" htmlFor="phoneNumber">
-              Τηλέφωνο:
-            </label>
-            <input
-              className="register-page-input"
-              type="text"
-              id="phoneNumber"
-              name="phoneNumber"
-              placeholder="Εισάγετε τον αριθμό τηλεφώνου σας"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-              required
-            />
-            <label className="register-page-label" htmlFor="email">
-              Email:
-            </label>
-            <input
-              className="register-page-input"
-              type="email"
-              id="email"
-              name="email"
-              placeholder="Εισάγετε το email σας"
-              value={formData.email}
-              onChange={handleChange}
-              required
-            />
-            <label className="register-page-label" htmlFor="password">
-              Κωδικός:
-            </label>
-            <input
-              className="register-page-input"
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Εισάγετε τον κωδικό σας"
-              value={formData.password}
-              onChange={handleChange}
-              required
-            />
-            <button className="register-page-button" type="submit">
-              Εγγραφή
-            </button>
-          </form>
-          <p className="register-page-link">
-            Έχετε ήδη λογαριασμό;{" "}
-            <a href="/" className="register-page-link-anchor">
-              Συνδεθείτε εδώ
-            </a>
-          </p>
-        </div>
+
+      <div className="properties-list">
+        <h2>Λίστα Ιδιοκτησιών</h2>
+        {properties.length > 0 ? (
+          properties.map((property) => (
+            <div key={property.id} className="property-item">
+              <p>
+                <strong>Διεύθυνση:</strong> {property.address}
+              </p>
+              <p>
+                <strong>Πόλη:</strong> {property.city}
+              </p>
+              <p>
+                <strong>Τ.Κ.:</strong> {property.postalCode}
+              </p>
+              <p>
+                <strong>ID Χρήστη:</strong> {property.userId}
+              </p>
+              <button
+                className="edit-button"
+                onClick={() => handleEdit(property)}
+              >
+                Επεξεργασία
+              </button>
+              <button
+                className="delete-button"
+                onClick={() => handleDelete(property.id)}
+              >
+                Διαγραφή
+              </button>
+            </div>
+          ))
+        ) : (
+          <p>Δεν υπάρχουν διαθέσιμες ιδιοκτησίες.</p>
+        )}
       </div>
     </div>
   );
 }
 
-export default RegisterPage;
+export default PropertiesPage;

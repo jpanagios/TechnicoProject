@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TechnicoBackend.Models;
+using TechnicoBackend.DTOs;
 using TechnicoBackend.Repositories;
 
 namespace TechnicoBackend.Services
@@ -15,66 +16,53 @@ namespace TechnicoBackend.Services
             _propertyRepository = propertyRepository;
         }
 
-        public async Task<Property?> GetPropertyByIdAsync(Guid propertyId, Guid userId, string userType)
+        public async Task<Property?> GetPropertyByIdAsync(Guid propertyId)
         {
             var property = await _propertyRepository.GetByIdAsync(propertyId);
 
-            if (property == null || (userType != "Admin" && property.UserId != userId))
-            {
-                throw new UnauthorizedAccessException("Δεν έχετε δικαίωμα πρόσβασης σε αυτό το ακίνητο.");
-            }
+            if (property == null)
+                throw new KeyNotFoundException("Το ακίνητο δεν βρέθηκε.");
 
             return property;
         }
 
-        public async Task<List<Property>> GetAllPropertiesAsync(Guid userId, string userType)
+        public async Task<List<Property>> GetAllPropertiesAsync()
         {
-            if (userType == "Admin")
-            {
-                return await _propertyRepository.GetAllAsync();
-            }
-
-            return await _propertyRepository.GetAllByUserIdAsync(userId);
+            return await _propertyRepository.GetAllAsync();
         }
 
-        public async Task AddPropertyAsync(Property property)
+        public async Task<Property> AddPropertyAsync(PropertyDTO propertyDto)
         {
-            if (property == null)
+            var property = new Property
             {
-                throw new ArgumentNullException(nameof(property));
-            }
+                Address = propertyDto.Address,
+                City = propertyDto.City,
+                PostalCode = propertyDto.PostalCode,
+                UserId = propertyDto.UserId
+            };
 
             await _propertyRepository.AddAsync(property);
+            return property;
         }
 
-        public async Task UpdatePropertyAsync(Property property, Guid userId, string userType)
+        public async Task UpdatePropertyAsync(Guid id, PropertyDTO propertyDto)
         {
+            var property = await _propertyRepository.GetByIdAsync(id);
             if (property == null)
-            {
-                throw new ArgumentNullException(nameof(property));
-            }
+                throw new KeyNotFoundException("Το ακίνητο δεν βρέθηκε.");
 
-            if (userType != "Admin" && property.UserId != userId)
-            {
-                throw new UnauthorizedAccessException("Δεν μπορείτε να τροποποιήσετε αυτό το ακίνητο.");
-            }
+            property.Address = propertyDto.Address;
+            property.City = propertyDto.City;
+            property.PostalCode = propertyDto.PostalCode;
 
             await _propertyRepository.UpdateAsync(property);
         }
 
-        public async Task DeletePropertyAsync(Guid propertyId, Guid userId, string userType)
+        public async Task DeletePropertyAsync(Guid propertyId)
         {
             var property = await _propertyRepository.GetByIdAsync(propertyId);
-
             if (property == null)
-            {
                 throw new KeyNotFoundException("Το ακίνητο δεν βρέθηκε.");
-            }
-
-            if (userType != "Admin" && property.UserId != userId)
-            {
-                throw new UnauthorizedAccessException("Δεν μπορείτε να διαγράψετε αυτό το ακίνητο.");
-            }
 
             await _propertyRepository.DeleteAsync(propertyId);
         }
