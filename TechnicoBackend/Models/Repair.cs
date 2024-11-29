@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace TechnicoBackend.Models
 {
@@ -13,8 +14,20 @@ namespace TechnicoBackend.Models
         [Required]
         public DateTime RepairDate { get; set; }
 
-        // Σχέση με Property
+        [Required]
+        public string? Type { get; set; }
+
+        [Required]
+        public string? Status { get; set; } = "Pending";
+
+        [Required]
+        public decimal Cost { get; set; }
+
+        public string? RepairAddress { get; set; }
+
         public Guid PropertyId { get; set; }
+
+        [JsonIgnore] // Αποφυγή κυκλικών αναφορών
         public Property? Property { get; set; }
     }
 }

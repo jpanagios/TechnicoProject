@@ -15,82 +15,68 @@ public class RepairService
         _propertyRepository = propertyRepository;
     }
 
-    public async Task<Repair?> GetRepairByIdAsync(Guid repairId, Guid userId, string userType)
+    // Λήψη επισκευής βάσει ID
+    public async Task<Repair?> GetRepairByIdAsync(Guid repairId)
     {
         var repair = await _repairRepository.GetByIdAsync(repairId);
-
         if (repair == null)
         {
             throw new KeyNotFoundException("Η επισκευή δεν βρέθηκε.");
         }
-
-        var property = await _propertyRepository.GetByIdAsync(repair.PropertyId);
-
-        if (property == null || (userType != "Admin" && property.UserId != userId))
-        {
-            throw new UnauthorizedAccessException("Δεν έχετε δικαίωμα πρόσβασης σε αυτή την επισκευή.");
-        }
-
         return repair;
     }
 
-    public async Task<List<Repair>> GetAllRepairsAsync(Guid userId, string userType)
+    // Λήψη όλων των επισκευών
+    public async Task<List<Repair>> GetAllRepairsAsync()
     {
-        if (userType == "Admin")
-        {
-            return await _repairRepository.GetAllAsync();
-        }
-
-        return await _repairRepository.GetAllByUserIdAsync(userId);
+        return await _repairRepository.GetAllAsync();
     }
 
-    public async Task AddRepairAsync(Repair repair, Guid userId, string userType)
+    // Προσθήκη νέας επισκευής
+    public async Task AddRepairAsync(Repair repair)
     {
+        // Έλεγχος αν υπάρχει το ακίνητο
         var property = await _propertyRepository.GetByIdAsync(repair.PropertyId);
-
-        if (property == null || (userType != "Admin" && property.UserId != userId))
+        if (property == null)
         {
-            throw new UnauthorizedAccessException("Δεν μπορείτε να προσθέσετε επισκευή σε αυτό το ακίνητο.");
+            throw new KeyNotFoundException("Το ακίνητο δεν βρέθηκε.");
         }
 
+        // Αντιστοίχιση διεύθυνσης από το ακίνητο
+        repair.RepairAddress = property.Address;
+
+        // Προσθήκη επισκευής
         await _repairRepository.AddAsync(repair);
     }
 
-    public async Task UpdateRepairAsync(Repair repair, Guid userId, string userType)
+    // Ενημέρωση επισκευής
+    public async Task UpdateRepairAsync(Repair repair)
     {
         var existingRepair = await _repairRepository.GetByIdAsync(repair.Id);
-
         if (existingRepair == null)
         {
             throw new KeyNotFoundException("Η επισκευή δεν βρέθηκε.");
         }
 
-        var property = await _propertyRepository.GetByIdAsync(existingRepair.PropertyId);
+        // Ενημέρωση πεδίων
+        existingRepair.Description = repair.Description;
+        existingRepair.RepairDate = repair.RepairDate;
+        existingRepair.Cost = repair.Cost;
+        existingRepair.Type = repair.Type;
+        existingRepair.Status = repair.Status;
 
-        if (property == null || (userType != "Admin" && property.UserId != userId))
-        {
-            throw new UnauthorizedAccessException("Δεν μπορείτε να τροποποιήσετε αυτή την επισκευή.");
-        }
-
-        await _repairRepository.UpdateAsync(repair);
+        // Αποθήκευση αλλαγών
+        await _repairRepository.UpdateAsync(existingRepair);
     }
 
-    public async Task DeleteRepairAsync(Guid repairId, Guid userId, string userType)
+    // Διαγραφή επισκευής
+    public async Task DeleteRepairAsync(Guid repairId)
     {
         var repair = await _repairRepository.GetByIdAsync(repairId);
-
         if (repair == null)
         {
             throw new KeyNotFoundException("Η επισκευή δεν βρέθηκε.");
         }
-
-        var property = await _propertyRepository.GetByIdAsync(repair.PropertyId);
-
-        if (property == null || (userType != "Admin" && property.UserId != userId))
-        {
-            throw new UnauthorizedAccessException("Δεν μπορείτε να διαγράψετε αυτή την επισκευή.");
-        }
-
         await _repairRepository.DeleteAsync(repairId);
     }
 }

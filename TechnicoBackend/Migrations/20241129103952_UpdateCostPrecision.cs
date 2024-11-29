@@ -5,7 +5,7 @@
 namespace TechnicoBackend.Migrations
 {
     /// <inheritdoc />
-    public partial class newDatabase : Migration
+    public partial class UpdateCostPrecision : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

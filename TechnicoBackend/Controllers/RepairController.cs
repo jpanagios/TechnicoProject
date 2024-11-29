@@ -1,11 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using TechnicoBackend.Services;
 using TechnicoBackend.Models;
-using System.Security.Claims;
+using TechnicoBackend.DTOs;
 
 namespace TechnicoBackend.Controllers
 {
-    [ApiController] // Μόνο μία φορά εδώ
+    [ApiController]
     [Route("api/[controller]")]
     public class RepairController : ControllerBase
     {
@@ -21,19 +21,12 @@ namespace TechnicoBackend.Controllers
         {
             try
             {
-                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
-                var userType = User.FindFirst(ClaimTypes.Role)?.Value ?? "User";
-
-                var repair = await _repairService.GetRepairByIdAsync(id, userId, userType);
+                var repair = await _repairService.GetRepairByIdAsync(id);
                 return Ok(repair);
             }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Forbid(ex.Message);
             }
             catch (Exception ex)
             {
@@ -42,19 +35,26 @@ namespace TechnicoBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddRepair(Repair repair)
+        public async Task<IActionResult> AddRepair([FromBody] RepairDTO repairDto)
         {
             try
             {
-                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
-                var userType = User.FindFirst(ClaimTypes.Role)?.Value ?? "User";
+                var repair = new Repair
+                {
+                    Description = repairDto.Description,
+                    RepairDate = repairDto.RepairDate ?? DateTime.Now,
+                    Cost = repairDto.Cost ?? 0,
+                    Type = repairDto.Type,
+                    Status = "Pending",
+                    PropertyId = repairDto.PropertyId
+                };
 
-                await _repairService.AddRepairAsync(repair, userId, userType);
+                await _repairService.AddRepairAsync(repair);
                 return CreatedAtAction(nameof(GetRepair), new { id = repair.Id }, repair);
             }
-            catch (UnauthorizedAccessException ex)
+            catch (KeyNotFoundException ex)
             {
-                return Forbid(ex.Message);
+                return NotFound(ex.Message);
             }
             catch (Exception ex)
             {
@@ -63,24 +63,17 @@ namespace TechnicoBackend.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateRepair(Guid id, Repair repair)
+        public async Task<IActionResult> UpdateRepair(Guid id, [FromBody] Repair repair)
         {
             try
             {
-                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
-                var userType = User.FindFirst(ClaimTypes.Role)?.Value ?? "User";
-
                 repair.Id = id;
-                await _repairService.UpdateRepairAsync(repair, userId, userType);
+                await _repairService.UpdateRepairAsync(repair);
                 return NoContent();
             }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Forbid(ex.Message);
             }
             catch (Exception ex)
             {
@@ -93,19 +86,12 @@ namespace TechnicoBackend.Controllers
         {
             try
             {
-                var userId = Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? Guid.Empty.ToString());
-                var userType = User.FindFirst(ClaimTypes.Role)?.Value ?? "User";
-
-                await _repairService.DeleteRepairAsync(id, userId, userType);
+                await _repairService.DeleteRepairAsync(id);
                 return NoContent();
             }
             catch (KeyNotFoundException ex)
             {
                 return NotFound(ex.Message);
-            }
-            catch (UnauthorizedAccessException ex)
-            {
-                return Forbid(ex.Message);
             }
             catch (Exception ex)
             {

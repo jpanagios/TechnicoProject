@@ -5,10 +5,8 @@ namespace TechnicoBackend.Data
 {
     public class TechnicoDbContext : DbContext
     {
-        // Constructor
         public TechnicoDbContext(DbContextOptions<TechnicoDbContext> options) : base(options) { }
 
-        // DbSet για κάθε οντότητα
         public DbSet<User> Users { get; set; } = null!;
         public DbSet<Property> Properties { get; set; } = null!;
         public DbSet<Repair> Repairs { get; set; } = null!;
@@ -20,14 +18,33 @@ namespace TechnicoBackend.Data
                 .HasOne(p => p.User)
                 .WithMany(u => u.Properties)
                 .HasForeignKey(p => p.UserId)
-                .OnDelete(DeleteBehavior.Cascade); // Διαγραφή properties όταν διαγράφεται ο user
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Σχέση: Property -> Repair (One-to-Many)
             modelBuilder.Entity<Repair>()
                 .HasOne(r => r.Property)
                 .WithMany(p => p.Repairs)
                 .HasForeignKey(r => r.PropertyId)
-                .OnDelete(DeleteBehavior.Cascade); // Διαγραφή repairs όταν διαγράφεται το property
+                .OnDelete(DeleteBehavior.Cascade);
+
+            // Προσθήκη νέων πεδίων στο Repair
+            modelBuilder.Entity<Repair>()
+                .Property(r => r.Status)
+                .HasDefaultValue("Pending");
+
+            modelBuilder.Entity<Repair>()
+                .Property(r => r.Type)
+                .IsRequired();
+
+            // Ρύθμιση του πεδίου Cost με ακρίβεια
+            modelBuilder.Entity<Repair>()
+                .Property(r => r.Cost)
+                .IsRequired()
+                .HasColumnType("decimal(18,2)"); // Ορίζει ακρίβεια 2 δεκαδικών ψηφίων
+
+            modelBuilder.Entity<Repair>()
+                .Property(r => r.RepairAddress)
+                .IsRequired(false);
 
             // Μοναδικότητα στο Email του User
             modelBuilder.Entity<User>()

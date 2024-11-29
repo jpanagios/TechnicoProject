@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace TechnicoBackend.Models
 {
@@ -18,9 +19,10 @@ namespace TechnicoBackend.Models
         public string? PostalCode { get; set; }
 
         public Guid UserId { get; set; }
+
+        [JsonIgnore] // Αποφυγή κυκλικών αναφορών
         public User? User { get; set; }
 
-        // Σχέση One-to-Many με Repairs
         public ICollection<Repair>? Repairs { get; set; } = new List<Repair>();
     }
 }

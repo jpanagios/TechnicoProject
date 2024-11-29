@@ -31,14 +31,6 @@ namespace TechnicoBackend.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Repair>> GetAllByUserIdAsync(Guid userId)
-        {
-            return await _context.Repairs
-                .Include(r => r.Property)
-                .Where(r => r.Property.UserId == userId) // Φιλτράρει με βάση τον UserId του Property
-                .ToListAsync();
-        }
-
         public async Task AddAsync(Repair repair)
         {
             await _context.Repairs.AddAsync(repair);
