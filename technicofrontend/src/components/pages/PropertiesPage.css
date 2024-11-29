@@ -27,6 +27,17 @@
     z-index: 1; /* Τοποθετεί τη φόρμα πάνω από τα υπόλοιπα περιεχόμενα */
 }
 
+/* Τίτλος Σελίδας */
+.properties-page-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #f2e5bf;
+    margin-bottom: 30px;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+
 /* Στυλ για τα input πεδία */
 .properties-form-container input {
     width: 93%;

@@ -94,9 +94,12 @@ function PropertiesPage() {
 
   return (
     <div className="properties-center-container">
+      {/* Τίτλος Σελίδας */}
+      <h1 className="properties-page-title">Προσθήκη Ιδιοκτησίας</h1>
+
       {/* Φόρμα δημιουργίας/επεξεργασίας */}
       <div className="properties-form-container">
-        <h1>{editMode ? "Επεξεργασία Ιδιοκτησίας" : "Προσθήκη Ιδιοκτησίας"}</h1>
+        <h2>{editMode ? "Επεξεργασία Ιδιοκτησίας" : "Προσθήκη Ιδιοκτησίας"}</h2>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
@@ -137,7 +140,7 @@ function PropertiesPage() {
             required
           />
           <button type="submit" className="properties-submit-button">
-            {editMode ? "Ενημέρωση" : "Προσθήκη"}
+            {editMode ? "Ενημέρωση" : "Προσθηκη Ιδιωκτησιας"}
           </button>
         </form>
       </div>
