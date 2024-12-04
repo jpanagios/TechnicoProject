@@ -1,20 +1,27 @@
-/* Κεντρική περιοχή για τη φόρμα και τη λίστα */
 .repairs-center-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: flex-start; /* Τοποθέτηση στην κορυφή */
+    justify-content: flex-start;
     min-height: 100vh;
-    background-image: url('../../assets/repair_photo.png');
+    background-image: url('../../assets/abstractwlp.jpg');
     background-size: cover;
     background-position: center;
     margin: 0;
     padding: 20px;
-    overflow-y: auto; /* Επιτρέπει το scroll στη σελίδα */
-}
-
-/* Φόρμα */
-.repairs-form-container {
+    overflow-y: auto;
+  }
+  
+  .repairs-page-title {
+    font-size: 32px;
+    font-weight: bold;
+    color: #f2e5bf;
+    margin-bottom: 30px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+  
+  .repairs-form-container {
     width: 600px;
     padding: 30px;
     background-color: #333;
@@ -22,14 +29,14 @@
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
     margin-bottom: 40px;
     backdrop-filter: blur(10px);
-    margin-top: 80px; /* Απόσταση από το navbar */
-    z-index: 1; /* Τοποθετεί τη φόρμα πάνω από τα υπόλοιπα περιεχόμενα */
-}
-
-/* Στυλ για τα input πεδία */
-.repairs-form-container input,
-.repairs-form-container select,
-.repairs-form-container textarea {
+    position: sticky;
+    top: 20px;
+    z-index: 1;
+  }
+  
+  .repairs-form-container input,
+  .repairs-form-container select,
+  .repairs-form-container textarea {
     width: 93%;
     padding: 15px;
     margin-bottom: 20px;
@@ -38,18 +45,17 @@
     font-size: 16px;
     background-color: #f9f9f9;
     color: #333;
-}
-
-.repairs-form-container input:focus,
-.repairs-form-container select:focus,
-.repairs-form-container textarea:focus {
+  }
+  
+  .repairs-form-container input:focus,
+  .repairs-form-container select:focus,
+  .repairs-form-container textarea:focus {
     border-color: #257180;
     box-shadow: 0 0 8px rgba(37, 113, 128, 0.5);
     outline: none;
-}
-
-/* Στυλ για το κουμπί */
-.repairs-submit-button {
+  }
+  
+  .repairs-submit-button {
     width: 100%;
     padding: 15px;
     font-size: 16px;
@@ -62,71 +68,41 @@
     font-weight: bold;
     transition: all 0.3s ease-in-out;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-}
-
-.repairs-submit-button:hover {
+  }
+  
+  .repairs-submit-button:hover {
     background-color: #003f54;
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
-}
-
-/* Στυλ για τις επιλογές status */
-.status-checkboxes {
-    display: flex;
-    justify-content: space-around;
-    margin-bottom: px;
-}
-
-.status-checkboxes label {
-    font-size: 14px;
-    color: #fff;
-    cursor: pointer;
-}
-
-.status-checkboxes input {
-    margin-right: 5px;
-}
-
-/* Λίστα Επισκευών */
-.repairs-list {
+  }
+  
+  .repairs-list {
     width: 80%;
     max-width: 800px;
-    max-height: 60vh; /* Μέγιστο ύψος για τη λίστα */
-    overflow-y: auto; /* Scroll όταν η λίστα ξεπερνά το μέγιστο ύψος */
+    max-height: 60vh;
+    overflow-y: auto;
     padding: 20px;
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-/* Στυλ για το scrollbar της λίστας */
-.repairs-list::-webkit-scrollbar {
-    width: 8px;
-}
-
-.repairs-list::-webkit-scrollbar-thumb {
-    background-color: #257180;
-    border-radius: 4px;
-}
-
-/* Στυλ για τα στοιχεία της λίστας */
-.repair-item {
+  }
+  
+  .repair-item {
     margin-bottom: 15px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #fff;
     transition: transform 0.2s ease;
-}
-
-.repair-item:hover {
+  }
+  
+  .repair-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-/* Στυλ για τα κουμπιά της λίστας */
-.edit-button,
-.delete-button {
+  }
+  
+  .edit-button,
+  .delete-button {
     margin-top: 10px;
     padding: 10px 15px;
     border: none;
@@ -136,25 +112,26 @@
     text-transform: uppercase;
     font-weight: bold;
     transition: all 0.3s ease;
-}
-
-.edit-button {
+  }
+  
+  .edit-button {
     background-color: #257180;
     color: #fff;
     margin-right: 10px;
-}
-
-.edit-button:hover {
+  }
+  
+  .edit-button:hover {
     background-color: #1e5e60;
     transform: translateY(-1px);
-}
-
-.delete-button {
+  }
+  
+  .delete-button {
     background-color: #cb6040;
     color: #fff;
-}
-
-.delete-button:hover {
+  }
+  
+  .delete-button:hover {
     background-color: #a94c30;
     transform: translateY(-1px);
-}
+  }
+  

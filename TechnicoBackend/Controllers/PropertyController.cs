@@ -16,7 +16,6 @@ namespace TechnicoBackend.Controllers
             _propertyService = propertyService;
         }
 
-        // GET: api/Property
         [HttpGet]
         public async Task<IActionResult> GetProperties()
         {
@@ -31,7 +30,6 @@ namespace TechnicoBackend.Controllers
             }
         }
 
-        // GET: api/Property/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetProperty(Guid id)
         {
@@ -50,7 +48,6 @@ namespace TechnicoBackend.Controllers
             }
         }
 
-        // POST: api/Property
         [HttpPost]
         public async Task<IActionResult> CreateProperty([FromBody] PropertyDTO propertyDto)
         {
@@ -65,7 +62,6 @@ namespace TechnicoBackend.Controllers
             }
         }
 
-        // PUT: api/Property/{id}
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProperty(Guid id, [FromBody] PropertyDTO propertyDto)
         {
@@ -84,10 +80,14 @@ namespace TechnicoBackend.Controllers
             }
         }
 
-        // DELETE: api/Property/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteProperty(Guid id)
         {
+            if (id == Guid.Empty)
+            {
+                return BadRequest("Invalid property ID.");
+            }
+
             try
             {
                 await _propertyService.DeletePropertyAsync(id);

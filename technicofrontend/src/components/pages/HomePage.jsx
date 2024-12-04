@@ -2,31 +2,45 @@ import React from "react";
 import { Link } from "react-router-dom";
 import PropertiesLogo from "../../assets/management.png";
 import RepairsLogo from "../../assets/tools.png";
-import "./HomePage.css"; // Σιγουρέψου ότι υπάρχει CSS αρχείο
+import ProfileLogo from "../../assets/user_my.png"; // Εισάγουμε το νέο εικονίδιο
+import "./HomePage.css";
 
 function HomePage() {
   return (
     <div className="homepage-container">
       <h1>Τι ψάχνετε σήμερα;</h1>
       <div className="section">
+        {/* Νέο Παράθυρο για Προφίλ */}
+        <div className="card">
+          <img src={ProfileLogo} alt="Προφίλ Χρήστη" className="logo" />
+          <Link to="/profile" className="button">
+            Προφίλ Χρήστη
+          </Link>
+          <p className="description">
+            Δείτε τα τρέχοντα repairs, properties και τα στοιχεία του προφίλ
+            σας.
+          </p>
+        </div>
+        {/* Παράθυρο για Ιδιοκτησίες */}
         <div className="card">
           <img
             src={PropertiesLogo}
-            alt="Διαχείριση Ιδιοκτησιών"
+            alt="Προσθήκη Ιδιοκτησίας"
             className="logo"
           />
           <Link to="/properties" className="button">
-            Διαχείριση Ιδιοκτησιών
+            Προσθήκη Ιδιοκτησίας
           </Link>
           <p className="description">
             Εδώ μπορείτε να δείτε, να προσθέσετε και να διαχειριστείτε τις
             ιδιοκτησίες σας εύκολα, όλα σε ένα μέρος.
           </p>
         </div>
+        {/* Παράθυρο για Επισκευές */}
         <div className="card">
-          <img src={RepairsLogo} alt="Διαχείριση Επισκευών" className="logo" />
+          <img src={RepairsLogo} alt="Προσθήκη Επισκευής" className="logo" />
           <Link to="/repairs" className="button">
-            Διαχείριση Επισκευών
+            Προσθήκη Επισκευής
           </Link>
           <p className="description">
             Παρακολουθήστε και οργανώστε τις επισκευές των ιδιοκτησιών σας με

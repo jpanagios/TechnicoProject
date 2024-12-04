@@ -50,5 +50,6 @@ namespace TechnicoBackend.Repositories
                 await _context.SaveChangesAsync();
             }
         }
+
     }
 }

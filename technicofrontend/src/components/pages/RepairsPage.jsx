@@ -20,11 +20,13 @@ function RepairsPage() {
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
 
+  // Fetch repairs from the backend on page load
   useEffect(() => {
     const fetchRepairs = async () => {
       try {
         const data = await getRepairs();
-        setRepairs(data);
+        console.log("Fetched repairs from backend:", data); // Log fetched data
+        setRepairs(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching repairs:", error);
       }
@@ -32,29 +34,39 @@ function RepairsPage() {
     fetchRepairs();
   }, []);
 
+  // Handle form input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  // Handle form submit for create/update
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      console.log("Form Data Submitted:", formData); // Log submitted form data
       if (editMode) {
         await updateRepair(editId, formData);
+        setRepairs((prev) =>
+          prev.map((repair) =>
+            repair.id === editId ? { ...repair, ...formData } : repair
+          )
+        );
+        console.log("Updated repair in state:", repairs); // Log updated repairs
         alert("Η επισκευή ενημερώθηκε με επιτυχία!");
       } else {
-        await createRepair(formData);
-        alert("Η επισκευή προστέθηκε επιτυχώς!");
+        const newRepair = await createRepair(formData);
+        console.log("New repair added:", newRepair); // Log newly added repair
+        setRepairs((prev) => [...prev, newRepair]);
+        alert("Η επισκευή προστέθηκε με επιτυχία!");
       }
       resetForm();
-      const data = await getRepairs();
-      setRepairs(data);
     } catch (error) {
       console.error("Error saving repair:", error);
     }
   };
 
+  // Reset form to default state
   const resetForm = () => {
     setFormData({
       propertyId: "",
@@ -66,11 +78,14 @@ function RepairsPage() {
     });
     setEditMode(false);
     setEditId(null);
+    console.log("Form reset to default state"); // Log form reset
   };
 
+  // Handle editing an existing repair
   const handleEdit = (repair) => {
+    console.log("Editing repair:", repair); // Log repair being edited
     setEditMode(true);
-    setEditId(repair.id);
+    setEditId(repair.id); // Εδώ θα δούμε αν το id υπάρχει
     setFormData({
       propertyId: repair.propertyId,
       repairDate: repair.repairDate,
@@ -81,12 +96,14 @@ function RepairsPage() {
     });
   };
 
+  // Handle deleting a repair
   const handleDelete = async (id) => {
     try {
+      console.log("Deleting repair ID:", id); // Log ID being deleted
       await deleteRepair(id);
-      alert("Η επισκευή διαγράφηκε επιτυχώς!");
-      const data = await getRepairs();
-      setRepairs(data);
+      setRepairs((prev) => prev.filter((repair) => repair.id !== id));
+      console.log("Repairs after delete:", repairs); // Log remaining repairs
+      alert("Η επισκευή διαγράφηκε με επιτυχία!");
     } catch (error) {
       console.error("Error deleting repair:", error);
     }
@@ -94,12 +111,14 @@ function RepairsPage() {
 
   return (
     <div className="repairs-center-container">
+      <h1 className="repairs-page-title">'</h1>
       <div className="repairs-form-container">
+        <h2>{editMode ? "Επεξεργασία Επισκευής" : "Προσθήκη Επισκευής"}</h2>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
             name="propertyId"
-            placeholder="Μοναδικός Κωδικός Ιδιοκτησίας"
+            placeholder="Κωδικός Ιδιοκτησίας"
             value={formData.propertyId}
             onChange={handleChange}
             required
@@ -128,34 +147,11 @@ function RepairsPage() {
           </select>
           <textarea
             name="description"
-            placeholder="Περιγραφή (μέχρι 200 χαρακτήρες)"
+            placeholder="Περιγραφή"
             value={formData.description}
             onChange={handleChange}
-            maxLength={200}
             required
           ></textarea>
-          <div className="status-checkboxes">
-            <label>
-              <input
-                type="radio"
-                name="status"
-                value="Pending"
-                checked={formData.status === "Pending"}
-                onChange={handleChange}
-              />
-              Pending
-            </label>
-            <label>
-              <input
-                type="radio"
-                name="status"
-                value="Completed"
-                checked={formData.status === "Completed"}
-                onChange={handleChange}
-              />
-              Completed
-            </label>
-          </div>
           <input
             type="number"
             name="cost"
@@ -165,13 +161,15 @@ function RepairsPage() {
             required
           />
           <button type="submit" className="repairs-submit-button">
-            {editMode ? "Ενημέρωση Επισκευής" : "Προσθήκη Επισκευής"}
+            {editMode ? "Ενημέρωση" : "Προσθήκη"}
           </button>
         </form>
       </div>
 
       <div className="repairs-list">
         <h2>Λίστα Επισκευών</h2>
+        {console.log("Rendering repairs list:", repairs)}{" "}
+        {/* Log repairs list */}
         {repairs.length > 0 ? (
           repairs.map((repair) => (
             <div key={repair.id} className="repair-item">
@@ -188,20 +186,17 @@ function RepairsPage() {
                 <strong>Περιγραφή:</strong> {repair.description}
               </p>
               <p>
-                <strong>Κατάσταση:</strong> {repair.status}
-              </p>
-              <p>
                 <strong>Κόστος:</strong> {repair.cost}€
               </p>
               <button
-                onClick={() => handleEdit(repair)}
                 className="edit-button"
+                onClick={() => handleEdit(repair)}
               >
                 Επεξεργασία
               </button>
               <button
-                onClick={() => handleDelete(repair.id)}
                 className="delete-button"
+                onClick={() => handleDelete(repair.id)}
               >
                 Διαγραφή
               </button>

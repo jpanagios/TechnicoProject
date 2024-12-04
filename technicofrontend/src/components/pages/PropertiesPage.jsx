@@ -18,13 +18,13 @@ function PropertiesPage() {
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
 
-  // Fetch properties when the component loads
+  // Fetch properties from the backend on page load
   useEffect(() => {
     const fetchProperties = async () => {
       try {
         const data = await getProperties();
-        console.log("Fetched properties:", data); // Debugging
-        setProperties(data);
+        console.log("Fetched properties from backend:", data); // Log fetched data
+        setProperties(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching properties:", error);
       }
@@ -36,18 +36,23 @@ function PropertiesPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Form Data Submitted:", formData); // Debugging
+      console.log("Form Data Submitted:", formData); // Log submitted form data
       if (editMode) {
         await updateProperty(editId, formData);
+        setProperties((prev) =>
+          prev.map((property) =>
+            property.id === editId ? { ...property, ...formData } : property
+          )
+        );
+        console.log("Updated property in state:", properties); // Log updated properties
         alert("Η ιδιοκτησία ενημερώθηκε με επιτυχία!");
       } else {
-        await createProperty(formData);
+        const newProperty = await createProperty(formData);
+        console.log("New property added:", newProperty); // Log newly added property
+        setProperties((prev) => [...prev, newProperty]);
         alert("Η ιδιοκτησία προστέθηκε με επιτυχία!");
       }
       resetForm();
-      const data = await getProperties();
-      console.log("Properties after create/update:", data); // Debugging
-      setProperties(data);
     } catch (error) {
       console.error("Error saving property:", error);
     }
@@ -63,11 +68,12 @@ function PropertiesPage() {
     });
     setEditMode(false);
     setEditId(null);
+    console.log("Form reset to default state"); // Log form reset
   };
 
   // Handle editing an existing property
   const handleEdit = (property) => {
-    console.log("Editing property:", property); // Debugging
+    console.log("Editing property:", property); // Log property being edited
     setEditMode(true);
     setEditId(property.id);
     setFormData({
@@ -81,12 +87,11 @@ function PropertiesPage() {
   // Handle deleting a property
   const handleDelete = async (id) => {
     try {
-      console.log("Deleting property ID:", id); // Debugging
+      console.log("Deleting property ID:", id); // Log ID being deleted
       await deleteProperty(id);
+      setProperties((prev) => prev.filter((property) => property.id !== id));
+      console.log("Properties after delete:", properties); // Log updated properties
       alert("Η ιδιοκτησία διαγράφηκε με επιτυχία!");
-      const data = await getProperties();
-      console.log("Properties after delete:", data); // Debugging
-      setProperties(data);
     } catch (error) {
       console.error("Error deleting property:", error);
     }
@@ -94,10 +99,7 @@ function PropertiesPage() {
 
   return (
     <div className="properties-center-container">
-      {/* Τίτλος Σελίδας */}
-      <h1 className="properties-page-title">Προσθήκη Ιδιοκτησίας</h1>
-
-      {/* Φόρμα δημιουργίας/επεξεργασίας */}
+      <h1 className="properties-page-title">'</h1>
       <div className="properties-form-container">
         <h2>{editMode ? "Επεξεργασία Ιδιοκτησίας" : "Προσθήκη Ιδιοκτησίας"}</h2>
         <form onSubmit={handleSubmit}>
@@ -140,48 +142,43 @@ function PropertiesPage() {
             required
           />
           <button type="submit" className="properties-submit-button">
-            {editMode ? "Ενημέρωση" : "Προσθηκη Ιδιωκτησιας"}
+            {editMode ? "Ενημέρωση" : "Προσθήκη"}
           </button>
         </form>
       </div>
 
-      {/* Λίστα ιδιοκτησιών */}
       <div className="properties-list">
         <h2>Λίστα Ιδιοκτησιών</h2>
-        {console.log("Rendered properties:", properties)} {/* Debugging */}
-        {properties && properties.length > 0 ? (
-          properties.map((property) => (
-            <div key={property.id} className="property-item">
-              {console.log("Rendering property:", property)} {/* Debugging */}
-              <p>
-                <strong>Διεύθυνση:</strong> {property.address}
-              </p>
-              <p>
-                <strong>Πόλη:</strong> {property.city}
-              </p>
-              <p>
-                <strong>Τ.Κ.:</strong> {property.postalCode}
-              </p>
-              <p>
-                <strong>ID Χρήστη:</strong> {property.userId}
-              </p>
-              <button
-                className="edit-button"
-                onClick={() => handleEdit(property)}
-              >
-                Επεξεργασία
-              </button>
-              <button
-                className="delete-button"
-                onClick={() => handleDelete(property.id)}
-              >
-                Διαγραφή
-              </button>
-            </div>
-          ))
-        ) : (
-          <p>Δεν υπάρχουν διαθέσιμες ιδιοκτησίες.</p>
-        )}
+        {console.log("Rendering properties list:", properties)}{" "}
+        {/* Log properties list */}
+        {properties.map((property) => (
+          <div key={property.id} className="property-item">
+            <p>
+              <strong>Διεύθυνση:</strong> {property.address}
+            </p>
+            <p>
+              <strong>Πόλη:</strong> {property.city}
+            </p>
+            <p>
+              <strong>Τ.Κ.:</strong> {property.postalCode}
+            </p>
+            <p>
+              <strong>ID Χρήστη:</strong> {property.userId}
+            </p>
+            <button
+              className="edit-button"
+              onClick={() => handleEdit(property)}
+            >
+              Επεξεργασία
+            </button>
+            <button
+              className="delete-button"
+              onClick={() => handleDelete(property.id)}
+            >
+              Διαγραφή
+            </button>
+          </div>
+        ))}
       </div>
     </div>
   );

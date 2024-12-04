@@ -11,11 +11,12 @@ import RegisterPage from "./components/pages/RegisterPage";
 import HomePage from "./components/pages/HomePage";
 import PropertiesPage from "./components/pages/PropertiesPage";
 import RepairsPage from "./components/pages/RepairsPage";
+import ProfilePage from "./components/pages/ProfilePage"; // Εισάγουμε το νέο component
 
 // Component to conditionally render the Navbar
 function ConditionalNavbar({ children }) {
   const location = useLocation();
-  const hideNavbarRoutes = ["/login", "/register"]; // Αποκρύπτει το Navbar από το /login και /register
+  const hideNavbarRoutes = ["/login", "/register"]; // Αποκρύπτει το Navbar από login και register
 
   return (
     <>
@@ -35,6 +36,7 @@ function App() {
           <Route path="/home" element={<HomePage />} />
           <Route path="/properties" element={<PropertiesPage />} />
           <Route path="/repairs" element={<RepairsPage />} />
+          <Route path="/profile" element={<ProfilePage />} /> {/* Νέο Route */}
         </Routes>
       </ConditionalNavbar>
     </Router>
