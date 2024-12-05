@@ -16,6 +16,20 @@ namespace TechnicoBackend.Controllers
             _repairService = repairService;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetRepairs()
+        {
+            try
+            {
+                var repairs = await _repairService.GetAllRepairsAsync();
+                return Ok(repairs);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetRepair(Guid id)
         {

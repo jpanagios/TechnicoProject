@@ -10,18 +10,18 @@
     margin: 0;
     padding: 20px;
     overflow-y: auto;
-  }
-  
-  .repairs-page-title {
+}
+
+.repairs-page-title {
     font-size: 32px;
     font-weight: bold;
     color: #f2e5bf;
     margin-bottom: 30px;
     text-align: center;
     text-transform: uppercase;
-  }
-  
-  .repairs-form-container {
+}
+
+.repairs-form-container {
     width: 600px;
     padding: 30px;
     background-color: #333;
@@ -32,11 +32,11 @@
     position: sticky;
     top: 20px;
     z-index: 1;
-  }
-  
-  .repairs-form-container input,
-  .repairs-form-container select,
-  .repairs-form-container textarea {
+}
+
+.repairs-form-container input,
+.repairs-form-container select,
+.repairs-form-container textarea {
     width: 93%;
     padding: 15px;
     margin-bottom: 20px;
@@ -45,17 +45,17 @@
     font-size: 16px;
     background-color: #f9f9f9;
     color: #333;
-  }
-  
-  .repairs-form-container input:focus,
-  .repairs-form-container select:focus,
-  .repairs-form-container textarea:focus {
+}
+
+.repairs-form-container input:focus,
+.repairs-form-container select:focus,
+.repairs-form-container textarea:focus {
     border-color: #257180;
     box-shadow: 0 0 8px rgba(37, 113, 128, 0.5);
     outline: none;
-  }
-  
-  .repairs-submit-button {
+}
+
+.repairs-submit-button {
     width: 100%;
     padding: 15px;
     font-size: 16px;
@@ -68,15 +68,15 @@
     font-weight: bold;
     transition: all 0.3s ease-in-out;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-  }
-  
-  .repairs-submit-button:hover {
+}
+
+.repairs-submit-button:hover {
     background-color: #003f54;
     box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
     transform: translateY(-2px);
-  }
-  
-  .repairs-list {
+}
+
+.repairs-list {
     width: 80%;
     max-width: 800px;
     max-height: 60vh;
@@ -85,24 +85,24 @@
     background-color: rgba(255, 255, 255, 0.9);
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  
-  .repair-item {
+}
+
+.repair-item {
     margin-bottom: 15px;
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 4px;
     background-color: #fff;
     transition: transform 0.2s ease;
-  }
-  
-  .repair-item:hover {
+}
+
+.repair-item:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-  }
-  
-  .edit-button,
-  .delete-button {
+}
+
+.edit-button,
+.delete-button {
     margin-top: 10px;
     padding: 10px 15px;
     border: none;
@@ -112,26 +112,25 @@
     text-transform: uppercase;
     font-weight: bold;
     transition: all 0.3s ease;
-  }
-  
-  .edit-button {
+}
+
+.edit-button {
     background-color: #257180;
     color: #fff;
     margin-right: 10px;
-  }
-  
-  .edit-button:hover {
+}
+
+.edit-button:hover {
     background-color: #1e5e60;
     transform: translateY(-1px);
-  }
-  
-  .delete-button {
+}
+
+.delete-button {
     background-color: #cb6040;
     color: #fff;
-  }
-  
-  .delete-button:hover {
+}
+
+.delete-button:hover {
     background-color: #a94c30;
     transform: translateY(-1px);
-  }
-  
+}
