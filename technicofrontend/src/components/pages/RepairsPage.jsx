@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import {
   getRepairs,
   createRepair,
@@ -8,7 +9,12 @@ import {
 import "./RepairsPage.css";
 
 function RepairsPage() {
-  const [repairs, setRepairs] = useState([]);
+  const { userId } = useParams(); // Ανάκτηση του userId από το route
+  const [repairs, setRepairs] = useState(() => {
+    const savedRepairs = localStorage.getItem(`repairs_${userId}`);
+    return savedRepairs ? JSON.parse(savedRepairs) : [];
+  });
+
   const [formData, setFormData] = useState({
     propertyId: "",
     repairDate: "",
@@ -17,40 +23,57 @@ function RepairsPage() {
     status: "Pending",
     cost: "",
   });
+
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
 
-  // Fetch repairs from the backend on page load
   useEffect(() => {
-    const fetchRepairs = async () => {
-      try {
-        const data = await getRepairs();
-        console.log("Fetched repairs from backend:", data);
-        setRepairs(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error("Error fetching repairs:", error);
-      }
-    };
-    fetchRepairs();
-  }, []);
+    const savedProperties =
+      JSON.parse(localStorage.getItem(`properties_${userId}`)) || [];
 
-  // Handle form submit for create/update
+    if (!repairs.length) {
+      const fetchRepairs = async () => {
+        try {
+          const data = await getRepairs();
+          const filteredRepairs = data.filter((repair) =>
+            savedProperties.some(
+              (property) => property.id === repair.propertyId
+            )
+          );
+          setRepairs(filteredRepairs);
+          localStorage.setItem(
+            `repairs_${userId}`,
+            JSON.stringify(filteredRepairs)
+          );
+        } catch (error) {
+          console.error("Error fetching repairs:", error);
+        }
+      };
+      fetchRepairs();
+    }
+  }, [repairs.length, userId]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Form Data Submitted:", formData);
       if (editMode) {
         await updateRepair(editId, formData);
-        setRepairs((prev) =>
-          prev.map((repair) =>
-            repair.id === editId ? { ...repair, ...formData } : repair
-          )
+        const updatedRepairs = repairs.map((repair) =>
+          repair.id === editId ? { ...repair, ...formData } : repair
         );
-        alert("Η επισκευή ενημερώθηκε με επιτυχία!");
+        setRepairs(updatedRepairs);
+        localStorage.setItem(
+          `repairs_${userId}`,
+          JSON.stringify(updatedRepairs)
+        );
       } else {
         const newRepair = await createRepair(formData);
-        setRepairs((prev) => [...prev, newRepair]);
-        alert("Η επισκευή προστέθηκε με επιτυχία!");
+        const updatedRepairs = [...repairs, newRepair];
+        setRepairs(updatedRepairs);
+        localStorage.setItem(
+          `repairs_${userId}`,
+          JSON.stringify(updatedRepairs)
+        );
       }
       resetForm();
     } catch (error) {
@@ -58,7 +81,6 @@ function RepairsPage() {
     }
   };
 
-  // Reset form to default state
   const resetForm = () => {
     setFormData({
       propertyId: "",
@@ -72,9 +94,7 @@ function RepairsPage() {
     setEditId(null);
   };
 
-  // Handle editing an existing repair
   const handleEdit = (repair) => {
-    console.log("Editing repair:", repair);
     setEditMode(true);
     setEditId(repair.id);
     setFormData({
@@ -87,15 +107,31 @@ function RepairsPage() {
     });
   };
 
-  // Handle deleting a repair
   const handleDelete = async (id) => {
     try {
-      console.log("Deleting repair ID:", id);
       await deleteRepair(id);
-      setRepairs((prev) => prev.filter((repair) => repair.id !== id));
-      alert("Η επισκευή διαγράφηκε με επιτυχία!");
+      const updatedRepairs = repairs.filter((repair) => repair.id !== id);
+      setRepairs(updatedRepairs);
+      localStorage.setItem(`repairs_${userId}`, JSON.stringify(updatedRepairs));
     } catch (error) {
       console.error("Error deleting repair:", error);
+    }
+  };
+
+  const handleStatusChange = async (id, newStatus) => {
+    try {
+      const updatedRepair = repairs.find((repair) => repair.id === id);
+      updatedRepair.status = newStatus;
+
+      await updateRepair(id, updatedRepair);
+
+      const updatedRepairs = repairs.map((repair) =>
+        repair.id === id ? { ...repair, status: newStatus } : repair
+      );
+      setRepairs(updatedRepairs);
+      localStorage.setItem(`repairs_${userId}`, JSON.stringify(updatedRepairs));
+    } catch (error) {
+      console.error("Error updating repair status:", error);
     }
   };
 
@@ -166,11 +202,22 @@ function RepairsPage() {
         <h2>Λίστα Επισκευών</h2>
         {repairs.map((repair) => (
           <div key={repair.id} className="repair-item">
+            <p>Κωδικός Ιδιοκτησίας: {repair.propertyId}</p>
             <p>Περιγραφή: {repair.description}</p>
             <p>Ημερομηνία: {repair.repairDate}</p>
             <p>Τύπος: {repair.type}</p>
             <p>Κόστος: {repair.cost} €</p>
-            <p>ID Ιδιοκτησίας: {repair.propertyId}</p>
+            <p>
+              Κατάσταση:
+              <select
+                value={repair.status}
+                onChange={(e) => handleStatusChange(repair.id, e.target.value)}
+              >
+                <option value="Pending">Pending</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+              </select>
+            </p>
             <button className="edit-button" onClick={() => handleEdit(repair)}>
               Επεξεργασία
             </button>

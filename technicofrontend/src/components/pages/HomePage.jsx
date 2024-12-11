@@ -6,6 +6,8 @@ import ProfileLogo from "../../assets/user_my.png"; // Εισάγουμε το �
 import "./HomePage.css";
 
 function HomePage() {
+  const userId = localStorage.getItem("userId");
+
   return (
     <div className="homepage-container">
       <h1>Τι ψάχνετε σήμερα;</h1>
@@ -28,7 +30,7 @@ function HomePage() {
             alt="Προσθήκη Ιδιοκτησίας"
             className="logo"
           />
-          <Link to="/properties" className="button">
+          <Link to={`/properties/${userId}`} className="button">
             Προσθήκη Ιδιοκτησίας
           </Link>
           <p className="description">
@@ -39,7 +41,7 @@ function HomePage() {
         {/* Παράθυρο για Επισκευές */}
         <div className="card">
           <img src={RepairsLogo} alt="Προσθήκη Επισκευής" className="logo" />
-          <Link to="/repairs" className="button">
+          <Link to={`/repairs/${userId}`} className="button">
             Προσθήκη Επισκευής
           </Link>
           <p className="description">

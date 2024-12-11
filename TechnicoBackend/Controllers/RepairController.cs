@@ -10,10 +10,13 @@ namespace TechnicoBackend.Controllers
     public class RepairController : ControllerBase
     {
         private readonly RepairService _repairService;
+        private readonly PropertyService _propertyService; // Προσθήκη PropertyService
 
-        public RepairController(RepairService repairService)
+        // Constructor με Injection και του PropertyService
+        public RepairController(RepairService repairService, PropertyService propertyService)
         {
             _repairService = repairService;
+            _propertyService = propertyService;
         }
 
         [HttpGet]
@@ -53,6 +56,19 @@ namespace TechnicoBackend.Controllers
         {
             try
             {
+                // Ανάκτηση του userId από το cookie
+                if (!Request.Cookies.TryGetValue("userId", out var userId))
+                {
+                    return Unauthorized("Ο χρήστης δεν είναι συνδεδεμένος.");
+                }
+
+                // Ελέγχουμε αν το property ανήκει στον χρήστη
+                var property = await _propertyService.GetPropertyByIdAsync(repairDto.PropertyId);
+                if (property == null || property.UserId != Guid.Parse(userId))
+                {
+                    return Unauthorized("Το ακίνητο δεν ανήκει στον χρήστη.");
+                }
+
                 var repair = new Repair
                 {
                     Description = repairDto.Description,

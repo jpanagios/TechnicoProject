@@ -66,6 +66,16 @@ namespace TechnicoBackend.Controllers
                     return Unauthorized("Λάθος email ή κωδικός πρόσβασης.");
                 }
 
+                // Δημιουργία cookie με το userId
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true, // Δεν είναι προσβάσιμο από JavaScript
+                    Expires = DateTime.UtcNow.AddDays(7), // Ημερομηνία λήξης (π.χ. 7 ημέρες)
+                    SameSite = SameSiteMode.Strict // Περιορισμός για να μην αποστέλλεται cross-site
+                };
+                Response.Cookies.Append("userId", user.Id.ToString(), cookieOptions);
+
+                // Επιστροφή μηνύματος επιτυχίας
                 return Ok(new
                 {
                     Id = user.Id,

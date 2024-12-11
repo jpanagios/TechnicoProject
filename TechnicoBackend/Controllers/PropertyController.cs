@@ -21,7 +21,15 @@ namespace TechnicoBackend.Controllers
         {
             try
             {
-                var properties = await _propertyService.GetAllPropertiesAsync();
+                // Ανάκτηση του userId από το cookie
+                if (!Request.Cookies.TryGetValue("userId", out var userId))
+                {
+                    return Unauthorized("Ο χρήστης δεν είναι συνδεδεμένος.");
+                }
+
+                // Φιλτράρισμα properties βάσει του userId
+                var properties = await _propertyService.GetPropertiesByUserIdAsync(Guid.Parse(userId));
+
                 return Ok(properties);
             }
             catch (Exception ex)
@@ -53,6 +61,15 @@ namespace TechnicoBackend.Controllers
         {
             try
             {
+                // Ανάκτηση του userId από το cookie
+                if (!Request.Cookies.TryGetValue("userId", out var userId))
+                {
+                    return Unauthorized("Ο χρήστης δεν είναι συνδεδεμένος.");
+                }
+
+                // Αντιστοίχιση του userId στο property
+                propertyDto.UserId = Guid.Parse(userId);
+
                 var createdProperty = await _propertyService.AddPropertyAsync(propertyDto);
                 return CreatedAtAction(nameof(GetProperty), new { id = createdProperty.Id }, createdProperty);
             }
@@ -61,6 +78,7 @@ namespace TechnicoBackend.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateProperty(Guid id, [FromBody] PropertyDTO propertyDto)

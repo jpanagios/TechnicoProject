@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TechnicoBackend.Models;
 using TechnicoBackend.DTOs;
@@ -16,6 +17,14 @@ namespace TechnicoBackend.Services
             _propertyRepository = propertyRepository;
         }
 
+        // Μέθοδος για την ανάκτηση όλων των properties ενός χρήστη βάσει του UserId
+        public async Task<List<Property>> GetPropertiesByUserIdAsync(Guid userId)
+        {
+            var properties = await _propertyRepository.GetAllAsync();
+            return properties.Where(p => p.UserId == userId).ToList();
+        }
+
+        // Ανάκτηση property βάσει Id
         public async Task<Property?> GetPropertyByIdAsync(Guid propertyId)
         {
             var property = await _propertyRepository.GetByIdAsync(propertyId);
@@ -26,11 +35,13 @@ namespace TechnicoBackend.Services
             return property;
         }
 
+        // Ανάκτηση όλων των properties
         public async Task<List<Property>> GetAllPropertiesAsync()
         {
             return await _propertyRepository.GetAllAsync();
         }
 
+        // Προσθήκη νέου property
         public async Task<Property> AddPropertyAsync(PropertyDTO propertyDto)
         {
             var property = new Property
@@ -45,6 +56,7 @@ namespace TechnicoBackend.Services
             return property;
         }
 
+        // Ενημέρωση υπάρχοντος property
         public async Task UpdatePropertyAsync(Guid id, PropertyDTO propertyDto)
         {
             var property = await _propertyRepository.GetByIdAsync(id);
@@ -58,6 +70,7 @@ namespace TechnicoBackend.Services
             await _propertyRepository.UpdateAsync(property);
         }
 
+        // Διαγραφή property
         public async Task DeletePropertyAsync(Guid propertyId)
         {
             var property = await _propertyRepository.GetByIdAsync(propertyId);

@@ -5,9 +5,9 @@ export const getRepairs = async () => {
     const response = await api.get('/Repair');
     const data = response.data;
 
-    // Ελέγχει αν τα δεδομένα περιέχουν το πεδίο $values
+    // Check if the data contains $values or is a plain array
     const repairs = Array.isArray(data) ? data : data?.$values || [];
-    console.log("Fetched repairs:", repairs); // Log repairs
+    console.log("Fetched repairs:", repairs); // Log fetched repairs
     return repairs;
   } catch (error) {
     console.error("Error fetching repairs:", error.response?.data || error.message);
@@ -22,6 +22,12 @@ export const createRepair = async (repair) => {
     return response.data;
   } catch (error) {
     console.error("Error creating repair:", error.response?.data || error.message);
+
+    // Log validation errors specifically if present
+    if (error.response && error.response.data && error.response.data.errors) {
+      console.error("Validation errors:", error.response.data.errors);
+    }
+
     throw error;
   }
 };
@@ -33,6 +39,12 @@ export const updateRepair = async (id, repair) => {
     return response.data;
   } catch (error) {
     console.error("Error updating repair:", error.response?.data || error.message);
+
+    // Log validation errors specifically if present
+    if (error.response && error.response.data && error.response.data.errors) {
+      console.error("Validation errors:", error.response.data.errors);
+    }
+
     throw error;
   }
 };

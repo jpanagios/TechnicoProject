@@ -16,6 +16,10 @@ function LoginPage() {
       const response = await login(email, password);
       if (response.message === "Σύνδεση επιτυχής") {
         alert("Σύνδεση επιτυχής!");
+        // Αποθηκεύουμε το userId στο local storage
+        localStorage.setItem("userId", response.id);
+        console.log("User ID:", response.id);
+        // Πλοήγηση στη διαδρομή home
         navigate("/home");
       } else {
         throw new Error("Σφάλμα σύνδεσης.");

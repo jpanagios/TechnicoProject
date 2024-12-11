@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import {
   getProperties,
   createProperty,
@@ -8,49 +9,64 @@ import {
 import "./PropertiesPage.css";
 
 function PropertiesPage() {
-  const [properties, setProperties] = useState([]);
+  const { userId } = useParams();
+  const [properties, setProperties] = useState(() => {
+    // Ανάκτηση των properties για το συγκεκριμένο userId από το localStorage αν υπάρχουν
+    const savedProperties = localStorage.getItem(`properties_${userId}`);
+    return savedProperties ? JSON.parse(savedProperties) : [];
+  });
+
   const [formData, setFormData] = useState({
     address: "",
     city: "",
     postalCode: "",
-    userId: "",
   });
   const [editMode, setEditMode] = useState(false);
   const [editId, setEditId] = useState(null);
 
-  // Fetch properties from the backend on page load
   useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const data = await getProperties();
-        console.log("Fetched properties from backend:", data); // Log fetched data
-        setProperties(Array.isArray(data) ? data : []);
-      } catch (error) {
-        console.error("Error fetching properties:", error);
-      }
-    };
-    fetchProperties();
-  }, []);
+    // Ανάκτηση των properties από το API μόνο αν δεν υπάρχουν στο localStorage για το συγκεκριμένο userId
+    if (!properties.length) {
+      const fetchProperties = async () => {
+        try {
+          const data = await getProperties();
+          const filteredProperties = data.filter(
+            (property) => property.userId === userId
+          );
+          setProperties(filteredProperties);
+          localStorage.setItem(
+            `properties_${userId}`,
+            JSON.stringify(filteredProperties)
+          ); // Αποθήκευση στο localStorage για το συγκεκριμένο userId
+        } catch (error) {
+          console.error("Error fetching properties:", error);
+        }
+      };
+      fetchProperties();
+    }
+  }, [userId, properties.length]);
 
-  // Handle form submit for create/update
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Form Data Submitted:", formData); // Log submitted form data
       if (editMode) {
         await updateProperty(editId, formData);
-        setProperties((prev) =>
-          prev.map((property) =>
-            property.id === editId ? { ...property, ...formData } : property
-          )
+        const updatedProperties = properties.map((property) =>
+          property.id === editId ? { ...property, ...formData } : property
         );
-        console.log("Updated property in state:", properties); // Log updated properties
-        alert("Η ιδιοκτησία ενημερώθηκε με επιτυχία!");
+        setProperties(updatedProperties);
+        localStorage.setItem(
+          `properties_${userId}`,
+          JSON.stringify(updatedProperties)
+        ); // Ενημέρωση στο localStorage για το συγκεκριμένο userId
       } else {
-        const newProperty = await createProperty(formData);
-        console.log("New property added:", newProperty); // Log newly added property
-        setProperties((prev) => [...prev, newProperty]);
-        alert("Η ιδιοκτησία προστέθηκε με επιτυχία!");
+        const newProperty = await createProperty({ ...formData, userId });
+        const updatedProperties = [...properties, newProperty];
+        setProperties(updatedProperties);
+        localStorage.setItem(
+          `properties_${userId}`,
+          JSON.stringify(updatedProperties)
+        ); // Ενημέρωση στο localStorage για το συγκεκριμένο userId
       }
       resetForm();
     } catch (error) {
@@ -58,40 +74,37 @@ function PropertiesPage() {
     }
   };
 
-  // Reset form to default state
   const resetForm = () => {
     setFormData({
       address: "",
       city: "",
       postalCode: "",
-      userId: "",
     });
     setEditMode(false);
     setEditId(null);
-    console.log("Form reset to default state"); // Log form reset
   };
 
-  // Handle editing an existing property
   const handleEdit = (property) => {
-    console.log("Editing property:", property); // Log property being edited
     setEditMode(true);
     setEditId(property.id);
     setFormData({
       address: property.address,
       city: property.city,
       postalCode: property.postalCode,
-      userId: property.userId,
     });
   };
 
-  // Handle deleting a property
   const handleDelete = async (id) => {
     try {
-      console.log("Deleting property ID:", id); // Log ID being deleted
       await deleteProperty(id);
-      setProperties((prev) => prev.filter((property) => property.id !== id));
-      console.log("Properties after delete:", properties); // Log updated properties
-      alert("Η ιδιοκτησία διαγράφηκε με επιτυχία!");
+      const updatedProperties = properties.filter(
+        (property) => property.id !== id
+      );
+      setProperties(updatedProperties);
+      localStorage.setItem(
+        `properties_${userId}`,
+        JSON.stringify(updatedProperties)
+      ); // Ενημέρωση στο localStorage για το συγκεκριμένο userId
     } catch (error) {
       console.error("Error deleting property:", error);
     }
@@ -101,58 +114,41 @@ function PropertiesPage() {
     <div className="properties-center-container">
       <h1 className="properties-page-title">'</h1>
       <div className="properties-form-container">
-        <h2>{editMode ? "Επεξεργασία Ιδιοκτησίας" : "Προσθήκη Ιδιοκτησίας"}</h2>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
-            name="address"
             placeholder="Διεύθυνση"
             value={formData.address}
             onChange={(e) =>
               setFormData({ ...formData, address: e.target.value })
             }
-            required
           />
           <input
             type="text"
-            name="city"
             placeholder="Πόλη"
             value={formData.city}
             onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-            required
           />
           <input
             type="text"
-            name="postalCode"
             placeholder="Ταχυδρομικός Κώδικας"
             value={formData.postalCode}
             onChange={(e) =>
               setFormData({ ...formData, postalCode: e.target.value })
             }
-            required
-          />
-          <input
-            type="text"
-            name="userId"
-            placeholder="ID Χρήστη"
-            value={formData.userId}
-            onChange={(e) =>
-              setFormData({ ...formData, userId: e.target.value })
-            }
-            required
           />
           <button type="submit" className="properties-submit-button">
             {editMode ? "Ενημέρωση" : "Προσθήκη"}
           </button>
         </form>
       </div>
-
       <div className="properties-list">
         <h2>Λίστα Ιδιοκτησιών</h2>
-        {console.log("Rendering properties list:", properties)}{" "}
-        {/* Log properties list */}
         {properties.map((property) => (
           <div key={property.id} className="property-item">
+            <p>
+              <strong>ID:</strong> {property.id}
+            </p>
             <p>
               <strong>Διεύθυνση:</strong> {property.address}
             </p>
@@ -160,10 +156,7 @@ function PropertiesPage() {
               <strong>Πόλη:</strong> {property.city}
             </p>
             <p>
-              <strong>Τ.Κ.:</strong> {property.postalCode}
-            </p>
-            <p>
-              <strong>ID Χρήστη:</strong> {property.userId}
+              <strong>Ταχυδρομικός Κώδικας:</strong> {property.postalCode}
             </p>
             <button
               className="edit-button"
