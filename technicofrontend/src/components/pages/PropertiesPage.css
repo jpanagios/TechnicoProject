@@ -130,3 +130,23 @@
   background-color: #a94c30;
   transform: translateY(-1px);
 }
+
+.add-repair-button {
+  margin-top: 10px;
+  margin-left: 15px; /* Αυξάνει το κενό μεταξύ των κουμπιών */
+  padding: 10px 15px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.add-repair-button:hover {
+  background-color: #45a049;
+}
+
+

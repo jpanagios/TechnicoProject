@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   getProperties,
   createProperty,
@@ -10,8 +10,8 @@ import "./PropertiesPage.css";
 
 function PropertiesPage() {
   const { userId } = useParams();
+  const navigate = useNavigate();
   const [properties, setProperties] = useState(() => {
-    // Ανάκτηση των properties για το συγκεκριμένο userId από το localStorage αν υπάρχουν
     const savedProperties = localStorage.getItem(`properties_${userId}`);
     return savedProperties ? JSON.parse(savedProperties) : [];
   });
@@ -25,7 +25,6 @@ function PropertiesPage() {
   const [editId, setEditId] = useState(null);
 
   useEffect(() => {
-    // Ανάκτηση των properties από το API μόνο αν δεν υπάρχουν στο localStorage για το συγκεκριμένο userId
     if (!properties.length) {
       const fetchProperties = async () => {
         try {
@@ -37,7 +36,7 @@ function PropertiesPage() {
           localStorage.setItem(
             `properties_${userId}`,
             JSON.stringify(filteredProperties)
-          ); // Αποθήκευση στο localStorage για το συγκεκριμένο userId
+          );
         } catch (error) {
           console.error("Error fetching properties:", error);
         }
@@ -58,7 +57,7 @@ function PropertiesPage() {
         localStorage.setItem(
           `properties_${userId}`,
           JSON.stringify(updatedProperties)
-        ); // Ενημέρωση στο localStorage για το συγκεκριμένο userId
+        );
       } else {
         const newProperty = await createProperty({ ...formData, userId });
         const updatedProperties = [...properties, newProperty];
@@ -66,7 +65,7 @@ function PropertiesPage() {
         localStorage.setItem(
           `properties_${userId}`,
           JSON.stringify(updatedProperties)
-        ); // Ενημέρωση στο localStorage για το συγκεκριμένο userId
+        );
       }
       resetForm();
     } catch (error) {
@@ -104,10 +103,14 @@ function PropertiesPage() {
       localStorage.setItem(
         `properties_${userId}`,
         JSON.stringify(updatedProperties)
-      ); // Ενημέρωση στο localStorage για το συγκεκριμένο userId
+      );
     } catch (error) {
       console.error("Error deleting property:", error);
     }
+  };
+
+  const handleAddRepair = (propertyId) => {
+    navigate(`/repairs/${userId}`);
   };
 
   return (
@@ -169,6 +172,12 @@ function PropertiesPage() {
               onClick={() => handleDelete(property.id)}
             >
               Διαγραφή
+            </button>
+            <button
+              className="add-repair-button"
+              onClick={() => handleAddRepair(property.id)}
+            >
+              Προσθήκη Κατασκευής
             </button>
           </div>
         ))}
