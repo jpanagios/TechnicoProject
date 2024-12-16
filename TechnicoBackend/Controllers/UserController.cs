@@ -23,6 +23,14 @@ namespace TechnicoBackend.Controllers
             return Ok(user);
         }
 
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            var users = await _userService.GetAllUsersAsync();
+            return Ok(users);
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> CreateUser(User user)
         {

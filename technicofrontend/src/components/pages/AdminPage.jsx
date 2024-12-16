@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { getAllUsers, deleteUser } from "../../api/userApi";
-import { getProperties } from "../../api/propertyApi";
-import { getRepairs } from "../../api/repairApi";
 import "./AdminPage.css";
 
 function AdminPage() {
   const [users, setUsers] = useState([]);
-  const [properties, setProperties] = useState([]);
-  const [repairs, setRepairs] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]); // Φιλτραρισμένοι χρήστες
+  const [loading, setLoading] = useState(true); // Φόρτωση
+  const [search, setSearch] = useState(""); // Τιμή αναζήτησης
 
   useEffect(() => {
     const fetchData = async () => {
@@ -15,35 +14,54 @@ function AdminPage() {
         // Φέρνει όλους τους χρήστες
         const allUsers = await getAllUsers();
         setUsers(allUsers);
-
-        // Φέρνει όλα τα properties
-        const allProperties = await getProperties();
-        setProperties(allProperties);
-
-        // Φέρνει όλα τα repairs
-        const allRepairs = await getRepairs();
-        setRepairs(allRepairs);
+        setFilteredUsers(allUsers); // Αρχική εμφάνιση όλων των χρηστών
+        setLoading(false); // Τέλος φόρτωσης
       } catch (error) {
         console.error("Error fetching data:", error);
+        setLoading(false);
       }
     };
 
     fetchData();
   }, []);
 
+  const handleSearchChange = (e) => {
+    const searchValue = e.target.value;
+    setSearch(searchValue);
+    const filtered = users.filter((user) =>
+      user.id.toString().includes(searchValue)
+    );
+    setFilteredUsers(filtered);
+  };
+
   const handleDeleteUser = async (userId) => {
     try {
       await deleteUser(userId);
-      setUsers(users.filter((user) => user.id !== userId));
+      const updatedUsers = users.filter((user) => user.id !== userId);
+      setUsers(updatedUsers);
+      setFilteredUsers(updatedUsers); // Ενημερώνουμε και τους φιλτραρισμένους χρήστες
       alert("Ο χρήστης διαγράφηκε επιτυχώς!");
     } catch (error) {
       console.error("Error deleting user:", error);
     }
   };
 
+  if (loading) {
+    return <div>Φόρτωση δεδομένων...</div>; // Προσωρινό μήνυμα φόρτωσης
+  }
+
   return (
     <div className="admin-page-container">
       <h1>Πίνακας Διαχείρισης Χρηστών</h1>
+      <div className="search-bar-container">
+        <input
+          type="text"
+          placeholder="Αναζήτηση με User ID"
+          value={search}
+          onChange={handleSearchChange}
+          className="search-bar"
+        />
+      </div>
       <div className="admin-table-container">
         <table className="admin-table">
           <thead>
@@ -52,48 +70,47 @@ function AdminPage() {
               <th>Email</th>
               <th>First Name</th>
               <th>Last Name</th>
-              <th>Properties</th>
-              <th>Repairs</th>
+              <th>Όνομα</th>
+              <th>Πληροφορίες</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr key={user.id}>
-                <td>{user.id}</td>
-                <td>{user.email}</td>
-                <td>{user.firstName}</td>
-                <td>{user.lastName}</td>
-                <td>
-                  {properties
-                    .filter((property) => property.userId === user.id)
-                    .map((property) => (
-                      <div key={property.id}>{property.address}</div>
-                    ))}
-                </td>
-                <td>
-                  {repairs
-                    .filter((repair) =>
-                      properties.some(
-                        (property) =>
-                          property.userId === user.id &&
-                          property.id === repair.propertyId
-                      )
-                    )
-                    .map((repair) => (
-                      <div key={repair.id}>{repair.description}</div>
-                    ))}
-                </td>
-                <td>
-                  <button
-                    className="admin-button-delete"
-                    onClick={() => handleDeleteUser(user.id)}
-                  >
-                    Διαγραφή Χρήστη
-                  </button>
-                </td>
+            {filteredUsers.length > 0 ? (
+              filteredUsers.map((user) => (
+                <tr key={user.id}>
+                  <td>{user.id}</td>
+                  <td>{user.email}</td>
+                  <td>{user.firstName}</td>
+                  <td>{user.lastName}</td>
+                  <td>
+                    {user.firstName} {user.lastName}
+                  </td>
+                  <td>
+                    <button
+                      className="admin-button-profile"
+                      onClick={() =>
+                        alert(`Προβολή προφίλ για τον χρήστη με ID: ${user.id}`)
+                      }
+                    >
+                      Προφίλ
+                    </button>
+                  </td>
+                  <td>
+                    <button
+                      className="admin-button-delete"
+                      onClick={() => handleDeleteUser(user.id)}
+                    >
+                      Διαγραφή Χρήστη
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="7">Δεν βρέθηκαν χρήστες με αυτό το User ID.</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

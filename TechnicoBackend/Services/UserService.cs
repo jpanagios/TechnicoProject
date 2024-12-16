@@ -17,6 +17,11 @@ namespace TechnicoBackend.Services
             return await _userRepository.GetByIdAsync(id);
         }
 
+        public async Task<List<User>> GetAllUsersAsync()
+        {
+            return await _userRepository.GetAllAsync();
+        }
+
         public async Task<List<User>> GetUsersAsync(string currentUserType)
         {
             if (currentUserType == "Admin")
