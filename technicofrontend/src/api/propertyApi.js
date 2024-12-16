@@ -1,76 +1,48 @@
-import api from './axios';
+import api from "./axios";
 
-/**
- * Επιστρέφει όλες τις ιδιοκτησίες από το API.
- */
+/** Φέρνει τα properties με βάση το userId */
 export const getProperties = async () => {
-    try {
-        const response = await api.get('/Property');
-        const data = response.data;
+  try {
+    const response = await api.get("/Property");
+    console.log("Properties από API:", response.data);
 
-        // Ελέγχει αν τα δεδομένα περιέχουν το πεδίο $values και επιστρέφει το array
-        const properties = data?.$values || [];
-        console.log("API Response (processed):", properties); // Log processed response
-
-        return properties;
-    } catch (error) {
-        console.error('Error fetching properties from API:', error.response?.data || error.message);
-        throw error;
-    }
+    // Επιστροφή ως array
+    return Array.isArray(response.data) ? response.data : [];
+  } catch (error) {
+    console.error("Error fetching properties:", error);
+    throw error;
+  }
 };
 
-/**
- * Επιστρέφει μία συγκεκριμένη ιδιοκτησία από το API.
- * @param {string} id - Το ID της ιδιοκτησίας.
- */
-export const getPropertyById = async (id) => {
-    try {
-        const response = await api.get(`/Property/${id}`);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching property by ID:', error.response?.data || error.message);
-        throw error;
-    }
-};
-
-/**
- * Δημιουργεί νέα ιδιοκτησία μέσω του API.
- * @param {Object} property - Τα δεδομένα της ιδιοκτησίας.
- */
+/** Δημιουργία νέου property */
 export const createProperty = async (property) => {
-    try {
-        const response = await api.post('/Property', property);
-        return response.data;
-    } catch (error) {
-        console.error('Error creating property:', error.response?.data || error.message);
-        throw error;
-    }
+  try {
+    const response = await api.post("/Property", property);
+    console.log("Property created:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error creating property:", error);
+    throw error;
+  }
 };
 
-/**
- * Ενημερώνει μια υπάρχουσα ιδιοκτησία μέσω του API.
- * @param {string} id - Το ID της ιδιοκτησίας.
- * @param {Object} property - Τα δεδομένα προς ενημέρωση.
- */
+/** Ενημέρωση property */
 export const updateProperty = async (id, property) => {
-    try {
-        const response = await api.put(`/Property/${id}`, property);
-        return response.data;
-    } catch (error) {
-        console.error('Error updating property:', error.response?.data || error.message);
-        throw error;
-    }
+  try {
+    const response = await api.put(`/Property/${id}`, property);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating property:", error);
+    throw error;
+  }
 };
 
-/**
- * Διαγράφει μια ιδιοκτησία μέσω του API.
- * @param {string} id - Το ID της ιδιοκτησίας.
- */
+/** Διαγραφή property */
 export const deleteProperty = async (id) => {
-    try {
-        await api.delete(`/Property/${id}`);
-    } catch (error) {
-        console.error('Error deleting property:', error.response?.data || error.message);
-        throw error;
-    }
+  try {
+    await api.delete(`/Property/${id}`);
+  } catch (error) {
+    console.error("Error deleting property:", error);
+    throw error;
+  }
 };

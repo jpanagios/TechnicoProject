@@ -28,17 +28,18 @@ function RepairsPage() {
   const [editId, setEditId] = useState(null);
 
   useEffect(() => {
-    const savedProperties =
-      JSON.parse(localStorage.getItem(`properties_${userId}`)) || [];
+    const savedUserId = localStorage.getItem("userId"); // Διασφαλίζουμε ότι υπάρχει το userId
+    if (!savedUserId || savedUserId !== userId) {
+      console.warn("User ID mismatch or missing in local storage.");
+      return;
+    }
 
     if (!repairs.length) {
       const fetchRepairs = async () => {
         try {
           const data = await getRepairs();
-          const filteredRepairs = data.filter((repair) =>
-            savedProperties.some(
-              (property) => property.id === repair.propertyId
-            )
+          const filteredRepairs = data.filter(
+            (repair) => repair.userId === userId
           );
           setRepairs(filteredRepairs);
           localStorage.setItem(
@@ -51,7 +52,7 @@ function RepairsPage() {
       };
       fetchRepairs();
     }
-  }, [repairs.length, userId]);
+  }, [userId, repairs.length]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,7 +68,7 @@ function RepairsPage() {
           JSON.stringify(updatedRepairs)
         );
       } else {
-        const newRepair = await createRepair(formData);
+        const newRepair = await createRepair({ ...formData, userId });
         const updatedRepairs = [...repairs, newRepair];
         setRepairs(updatedRepairs);
         localStorage.setItem(

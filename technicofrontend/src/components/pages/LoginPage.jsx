@@ -14,12 +14,11 @@ function LoginPage() {
     setError("");
     try {
       const response = await login(email, password);
+      console.log("Login API Response:", response); // Log API response
       if (response.message === "Σύνδεση επιτυχής") {
         alert("Σύνδεση επιτυχής!");
-        // Αποθηκεύουμε το userId στο local storage
         localStorage.setItem("userId", response.id);
-        console.log("User ID:", response.id);
-        // Πλοήγηση στη διαδρομή home
+        console.log("User ID αποθηκεύτηκε:", response.id); // Log User ID
         navigate("/home");
       } else {
         throw new Error("Σφάλμα σύνδεσης.");

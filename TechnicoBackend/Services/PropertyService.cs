@@ -17,7 +17,7 @@ namespace TechnicoBackend.Services
             _propertyRepository = propertyRepository;
         }
 
-        // Μέθοδος για την ανάκτηση όλων των properties ενός χρήστη βάσει του UserId
+        // Ανάκτηση properties βάσει UserId
         public async Task<List<Property>> GetPropertiesByUserIdAsync(Guid userId)
         {
             var properties = await _propertyRepository.GetAllAsync();
@@ -35,12 +35,6 @@ namespace TechnicoBackend.Services
             return property;
         }
 
-        // Ανάκτηση όλων των properties
-        public async Task<List<Property>> GetAllPropertiesAsync()
-        {
-            return await _propertyRepository.GetAllAsync();
-        }
-
         // Προσθήκη νέου property
         public async Task<Property> AddPropertyAsync(PropertyDTO propertyDto)
         {
@@ -56,7 +50,7 @@ namespace TechnicoBackend.Services
             return property;
         }
 
-        // Ενημέρωση υπάρχοντος property
+        // Ενημέρωση property
         public async Task UpdatePropertyAsync(Guid id, PropertyDTO propertyDto)
         {
             var property = await _propertyRepository.GetByIdAsync(id);

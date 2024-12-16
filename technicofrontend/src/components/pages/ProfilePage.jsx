@@ -123,7 +123,7 @@ function ProfilePage() {
       <div className="search-container">
         <input
           type="text"
-          placeholder="Αναζήτηση..."
+          placeholder="Αναζήτηση με id..."
           value={searchTerm}
           onChange={handleSearch}
           className="search-bar"

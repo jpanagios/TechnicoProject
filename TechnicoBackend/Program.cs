@@ -19,16 +19,17 @@ builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<PropertyService>();
 builder.Services.AddScoped<RepairService>();
 
-// Configure CORS
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
         policy.WithOrigins("http://localhost:3000") // Frontend origin
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials(); // Απαραίτητο για cookies
     });
 });
+
 
 // Configure Controllers and Swagger
 builder.Services.AddControllers()

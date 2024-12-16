@@ -27,14 +27,13 @@ namespace TechnicoBackend.Controllers
                     return Unauthorized("Ο χρήστης δεν είναι συνδεδεμένος.");
                 }
 
-                // Φιλτράρισμα properties βάσει του userId
+                // Φιλτράρισμα των properties
                 var properties = await _propertyService.GetPropertiesByUserIdAsync(Guid.Parse(userId));
-
                 return Ok(properties);
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                return BadRequest($"Σφάλμα κατά την ανάκτηση των properties: {ex.Message}");
             }
         }
 

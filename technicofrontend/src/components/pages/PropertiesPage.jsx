@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   getProperties,
   createProperty,
@@ -9,13 +9,9 @@ import {
 import "./PropertiesPage.css";
 
 function PropertiesPage() {
-  const { userId } = useParams();
   const navigate = useNavigate();
-  const [properties, setProperties] = useState(() => {
-    const savedProperties = localStorage.getItem(`properties_${userId}`);
-    return savedProperties ? JSON.parse(savedProperties) : [];
-  });
-
+  const userId = localStorage.getItem("userId"); // Ανάκτηση του userId από το localStorage
+  const [properties, setProperties] = useState([]);
   const [formData, setFormData] = useState({
     address: "",
     city: "",
@@ -25,62 +21,103 @@ function PropertiesPage() {
   const [editId, setEditId] = useState(null);
 
   useEffect(() => {
-    if (!properties.length) {
-      const fetchProperties = async () => {
-        try {
-          const data = await getProperties();
-          const filteredProperties = data.filter(
-            (property) => property.userId === userId
-          );
-          setProperties(filteredProperties);
-          localStorage.setItem(
-            `properties_${userId}`,
-            JSON.stringify(filteredProperties)
-          );
-        } catch (error) {
-          console.error("Error fetching properties:", error);
-        }
-      };
-      fetchProperties();
-    }
-  }, [userId, properties.length]);
+    const fetchAndSyncProperties = async () => {
+      try {
+        console.log("Fetching properties from API...");
+        const apiData = await getProperties(); // Φέρνουμε τα properties από το API
+        const userPropertiesFromApi = apiData.filter(
+          (property) => property.userId === userId
+        );
+
+        console.log("Properties από API:", userPropertiesFromApi);
+
+        // Φόρτωση από το localStorage
+        const localData = localStorage.getItem(`properties_${userId}`);
+        const localProperties = localData ? JSON.parse(localData) : [];
+        console.log("Properties από Local Storage:", localProperties);
+
+        // Συγχώνευση των properties από API και Local Storage
+        const combinedProperties = [
+          ...userPropertiesFromApi,
+          ...localProperties.filter(
+            (localProp) =>
+              !userPropertiesFromApi.some(
+                (apiProp) => apiProp.id === localProp.id
+              )
+          ),
+        ];
+
+        console.log("Συγχωνευμένα properties:", combinedProperties);
+
+        // Αποθήκευση συγχωνευμένων properties στο localStorage
+        localStorage.setItem(
+          `properties_${userId}`,
+          JSON.stringify(combinedProperties)
+        );
+
+        // Ενημέρωση του state
+        setProperties(combinedProperties);
+      } catch (error) {
+        console.error(
+          "Σφάλμα κατά την ανάκτηση ή συγχώνευση των properties:",
+          error
+        );
+      }
+    };
+
+    if (userId) fetchAndSyncProperties();
+    else console.error("User ID is missing. Redirecting to login.");
+  }, [userId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      let updatedProperties;
+
       if (editMode) {
         await updateProperty(editId, formData);
-        const updatedProperties = properties.map((property) =>
+        updatedProperties = properties.map((property) =>
           property.id === editId ? { ...property, ...formData } : property
-        );
-        setProperties(updatedProperties);
-        localStorage.setItem(
-          `properties_${userId}`,
-          JSON.stringify(updatedProperties)
         );
       } else {
         const newProperty = await createProperty({ ...formData, userId });
-        const updatedProperties = [...properties, newProperty];
-        setProperties(updatedProperties);
-        localStorage.setItem(
-          `properties_${userId}`,
-          JSON.stringify(updatedProperties)
-        );
+        updatedProperties = [...properties, newProperty];
       }
+
+      // Ενημέρωση της κατάστασης και του localStorage
+      setProperties(updatedProperties);
+      localStorage.setItem(
+        `properties_${userId}`,
+        JSON.stringify(updatedProperties)
+      );
+
       resetForm();
     } catch (error) {
-      console.error("Error saving property:", error);
+      console.error("Σφάλμα κατά την αποθήκευση του property:", error);
     }
   };
 
   const resetForm = () => {
-    setFormData({
-      address: "",
-      city: "",
-      postalCode: "",
-    });
+    setFormData({ address: "", city: "", postalCode: "" });
     setEditMode(false);
     setEditId(null);
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      await deleteProperty(id);
+      const updatedProperties = properties.filter(
+        (property) => property.id !== id
+      );
+
+      setProperties(updatedProperties);
+      localStorage.setItem(
+        `properties_${userId}`,
+        JSON.stringify(updatedProperties)
+      );
+    } catch (error) {
+      console.error("Σφάλμα κατά τη διαγραφή του property:", error);
+    }
   };
 
   const handleEdit = (property) => {
@@ -91,22 +128,6 @@ function PropertiesPage() {
       city: property.city,
       postalCode: property.postalCode,
     });
-  };
-
-  const handleDelete = async (id) => {
-    try {
-      await deleteProperty(id);
-      const updatedProperties = properties.filter(
-        (property) => property.id !== id
-      );
-      setProperties(updatedProperties);
-      localStorage.setItem(
-        `properties_${userId}`,
-        JSON.stringify(updatedProperties)
-      );
-    } catch (error) {
-      console.error("Error deleting property:", error);
-    }
   };
 
   const handleAddRepair = (propertyId) => {
@@ -145,42 +166,47 @@ function PropertiesPage() {
           </button>
         </form>
       </div>
+
       <div className="properties-list">
         <h2>Λίστα Ιδιοκτησιών</h2>
-        {properties.map((property) => (
-          <div key={property.id} className="property-item">
-            <p>
-              <strong>ID:</strong> {property.id}
-            </p>
-            <p>
-              <strong>Διεύθυνση:</strong> {property.address}
-            </p>
-            <p>
-              <strong>Πόλη:</strong> {property.city}
-            </p>
-            <p>
-              <strong>Ταχυδρομικός Κώδικας:</strong> {property.postalCode}
-            </p>
-            <button
-              className="edit-button"
-              onClick={() => handleEdit(property)}
-            >
-              Επεξεργασία
-            </button>
-            <button
-              className="delete-button"
-              onClick={() => handleDelete(property.id)}
-            >
-              Διαγραφή
-            </button>
-            <button
-              className="add-repair-button"
-              onClick={() => handleAddRepair(property.id)}
-            >
-              Προσθήκη Κατασκευής
-            </button>
-          </div>
-        ))}
+        {properties.length === 0 ? (
+          <p>Δεν υπάρχουν διαθέσιμες ιδιοκτησίες.</p>
+        ) : (
+          properties.map((property) => (
+            <div key={property.id} className="property-item">
+              <p>
+                <strong>ID:</strong> {property.id}
+              </p>
+              <p>
+                <strong>Διεύθυνση:</strong> {property.address}
+              </p>
+              <p>
+                <strong>Πόλη:</strong> {property.city}
+              </p>
+              <p>
+                <strong>Ταχ. Κώδικας:</strong> {property.postalCode}
+              </p>
+              <button
+                className="edit-button"
+                onClick={() => handleEdit(property)}
+              >
+                Επεξεργασία
+              </button>
+              <button
+                className="delete-button"
+                onClick={() => handleDelete(property.id)}
+              >
+                Διαγραφή
+              </button>
+              <button
+                className="add-repair-button"
+                onClick={() => handleAddRepair(property.id)}
+              >
+                Προσθήκη Κατασκευής
+              </button>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );
