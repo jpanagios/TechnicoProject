@@ -9,16 +9,28 @@ function LoginPage() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const adminEmails = ["nick@admin.gr", "mitsos@admin.gr", "stathis@admin.gr"];
+  const adminPassword = "admin1";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
+
+    // Έλεγχος για Admin Credentials
+    if (adminEmails.includes(email) && password === adminPassword) {
+      alert("Καλωσορίσατε, Admin!");
+      navigate("/admin");
+      return;
+    }
+
     try {
       const response = await login(email, password);
-      console.log("Login API Response:", response); // Log API response
+      console.log("Login API Response:", response);
+
       if (response.message === "Σύνδεση επιτυχής") {
         alert("Σύνδεση επιτυχής!");
         localStorage.setItem("userId", response.id);
-        console.log("User ID αποθηκεύτηκε:", response.id); // Log User ID
+        console.log("User ID αποθηκεύτηκε:", response.id);
         navigate("/home");
       } else {
         throw new Error("Σφάλμα σύνδεσης.");

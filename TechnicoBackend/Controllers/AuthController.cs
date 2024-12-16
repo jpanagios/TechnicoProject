@@ -40,7 +40,6 @@ namespace TechnicoBackend.Controllers
 
                 await _userRepository.AddAsync(user);
 
-                // Επιστροφή του ID και μηνύματος επιτυχίας
                 return Ok(new
                 {
                     Id = user.Id,
@@ -66,16 +65,23 @@ namespace TechnicoBackend.Controllers
                     return Unauthorized("Λάθος email ή κωδικός πρόσβασης.");
                 }
 
-                // Δημιουργία cookie με το userId
+                if (user.UserType == "admin")
+                {
+                    return Ok(new
+                    {
+                        Message = "Admin Login Successful",
+                        Role = "admin"
+                    });
+                }
+
                 var cookieOptions = new CookieOptions
                 {
-                    HttpOnly = true, // Δεν είναι προσβάσιμο από JavaScript
-                    Expires = DateTime.UtcNow.AddDays(7), // Ημερομηνία λήξης (π.χ. 7 ημέρες)
-                    SameSite = SameSiteMode.Strict // Περιορισμός για να μην αποστέλλεται cross-site
+                    HttpOnly = true,
+                    Expires = DateTime.UtcNow.AddDays(7),
+                    SameSite = SameSiteMode.Strict
                 };
                 Response.Cookies.Append("userId", user.Id.ToString(), cookieOptions);
 
-                // Επιστροφή μηνύματος επιτυχίας
                 return Ok(new
                 {
                     Id = user.Id,

@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+ο»Ώusing Microsoft.EntityFrameworkCore;
 using TechnicoBackend.Data;
 using TechnicoBackend.Repositories;
 using TechnicoBackend.Services;
@@ -26,7 +26,7 @@ builder.Services.AddCors(options =>
         policy.WithOrigins("http://localhost:3000") // Frontend origin
               .AllowAnyMethod()
               .AllowAnyHeader()
-              .AllowCredentials(); // Απαραίτητο για cookies
+              .AllowCredentials(); 
     });
 });
 
@@ -49,7 +49,7 @@ app.UseSwaggerUI();
 
 // Middleware setup
 app.UseHttpsRedirection();
-app.UseCors("AllowFrontend");
+app.UseCors("AllowFrontend");   
 app.UseAuthorization();
 
 // Map Controllers
