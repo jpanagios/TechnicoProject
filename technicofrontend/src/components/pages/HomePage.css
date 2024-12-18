@@ -2,7 +2,7 @@
     position: relative;
     text-align: center;
     width: 100%;
-    height: 100vh; /* Το background γεμίζει όλο το παράθυρο */
+    height: 100vh; 
     background-image: url('../../assets/abstractwlp.jpg');
     background-size: cover;
     background-position: center;
@@ -23,8 +23,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Overlay για πιο ευδιάκριτο κείμενο */
-    z-index: -1; /* Πίσω από το περιεχόμενο */
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: -1; 
 }
 
 .section {

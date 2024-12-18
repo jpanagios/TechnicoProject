@@ -22,19 +22,18 @@ function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Καθαρισμός προηγούμενων σφαλμάτων
+    setError(null);
     try {
-      console.log("Submitting registration data:", formData); // Debugging
+      console.log("Submitting registration data:", formData);
       const response = await register(formData);
-      console.log("Registration response:", response); // Debugging
+      console.log("Registration response:", response);
 
       if (response.id) {
-        // Αποθηκεύουμε το userId στο local storage
         localStorage.setItem("userId", response.id);
         console.log("User ID αποθηκεύτηκε:", response.id);
 
         alert("Η εγγραφή ήταν επιτυχής!");
-        navigate("/home"); // Ανακατεύθυνση στη σελίδα home
+        navigate("/home"); 
       } else {
         throw new Error("Το backend δεν επέστρεψε user ID.");
       }

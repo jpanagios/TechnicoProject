@@ -10,7 +10,7 @@ import "./PropertiesPage.css";
 
 function PropertiesPage() {
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId"); // Ανάκτηση του userId από το localStorage
+  const userId = localStorage.getItem("userId");
   const [properties, setProperties] = useState([]);
   const [formData, setFormData] = useState({
     address: "",
@@ -24,19 +24,17 @@ function PropertiesPage() {
     const fetchAndSyncProperties = async () => {
       try {
         console.log("Fetching properties from API...");
-        const apiData = await getProperties(); // Φέρνουμε τα properties από το API
+        const apiData = await getProperties();
         const userPropertiesFromApi = apiData.filter(
           (property) => property.userId === userId
         );
 
         console.log("Properties από API:", userPropertiesFromApi);
 
-        // Φόρτωση από το localStorage
         const localData = localStorage.getItem(`properties_${userId}`);
         const localProperties = localData ? JSON.parse(localData) : [];
         console.log("Properties από Local Storage:", localProperties);
 
-        // Συγχώνευση των properties από API και Local Storage
         const combinedProperties = [
           ...userPropertiesFromApi,
           ...localProperties.filter(
@@ -49,13 +47,11 @@ function PropertiesPage() {
 
         console.log("Συγχωνευμένα properties:", combinedProperties);
 
-        // Αποθήκευση συγχωνευμένων properties στο localStorage
         localStorage.setItem(
           `properties_${userId}`,
           JSON.stringify(combinedProperties)
         );
 
-        // Ενημέρωση του state
         setProperties(combinedProperties);
       } catch (error) {
         console.error(
@@ -84,7 +80,6 @@ function PropertiesPage() {
         updatedProperties = [...properties, newProperty];
       }
 
-      // Ενημέρωση της κατάστασης και του localStorage
       setProperties(updatedProperties);
       localStorage.setItem(
         `properties_${userId}`,

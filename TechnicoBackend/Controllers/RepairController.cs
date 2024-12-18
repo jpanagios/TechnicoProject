@@ -56,13 +56,11 @@ namespace TechnicoBackend.Controllers
         {
             try
             {
-                // Ανάκτηση του userId από το cookie
                 if (!Request.Cookies.TryGetValue("userId", out var userId))
                 {
                     return Unauthorized("Ο χρήστης δεν είναι συνδεδεμένος.");
                 }
 
-                // Ελέγχουμε αν το property ανήκει στον χρήστη
                 var property = await _propertyService.GetPropertyByIdAsync(repairDto.PropertyId);
                 if (property == null || property.UserId != Guid.Parse(userId))
                 {

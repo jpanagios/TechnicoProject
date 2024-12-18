@@ -15,7 +15,6 @@ function ProfilePage() {
 
     const fetchData = async () => {
       try {
-        // Fetch user's properties
         const savedProperties =
           JSON.parse(localStorage.getItem(`properties_${userId}`)) || [];
         console.log("Saved Properties from LocalStorage:", savedProperties);
@@ -37,7 +36,6 @@ function ProfilePage() {
           setProperties(savedProperties);
         }
 
-        // Fetch user's repairs
         const savedRepairs =
           JSON.parse(localStorage.getItem(`repairs_${userId}`)) || [];
         console.log("Saved Repairs from LocalStorage:", savedRepairs);
@@ -81,7 +79,6 @@ function ProfilePage() {
         repair.id === repairId ? { ...repair, status: newStatus } : repair
       );
 
-      // Update locally
       setRepairs(updatedRepairs);
       setFilteredRepairs(updatedRepairs);
       localStorage.setItem(
@@ -90,7 +87,6 @@ function ProfilePage() {
       );
       console.log("Updated repairs in local storage:", updatedRepairs);
 
-      // Optionally update in backend
       const repairToUpdate = updatedRepairs.find(
         (repair) => repair.id === repairId
       );

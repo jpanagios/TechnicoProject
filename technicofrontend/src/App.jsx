@@ -17,7 +17,7 @@ import AdminPage from "./components/pages/AdminPage";
 
 function ConditionalNavbar({ children }) {
   const location = useLocation();
-  const hideNavbarRoutes = ["/login", "/register", "/admin"]; // Routes χωρίς Navbar
+  const hideNavbarRoutes = ["/login", "/register", "/admin"];
 
   return (
     <>
@@ -32,7 +32,6 @@ function App() {
     <Router>
       <ConditionalNavbar>
         <Routes>
-          {/* Ανακατεύθυνση από τη ρίζα στο /login */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />

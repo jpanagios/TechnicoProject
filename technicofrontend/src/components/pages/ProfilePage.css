@@ -3,9 +3,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  min-height: 100vh; /* Καλύπτει όλο το ύψος της σελίδας */
+  min-height: 100vh; 
   padding: 20px;
-  background-image: url('../../assets/abstractwlp.jpg'); /* Προσθήκη background */
+  background-image: url('../../assets/abstractwlp.jpg'); 
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -13,15 +13,15 @@
 
 .profile-page-container h1 {
   margin-bottom: 20px;
-  color: #ffffff; /* Ανοιχτό χρώμα για να ξεχωρίζει από το background */
-  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); /* Προσθήκη σκιάς για καλύτερη ορατότητα */
+  color: #ffffff; 
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7); 
 }
 
 .profile-table-container {
-  max-height: 60vh; /* Περιορίζει το ύψος του πίνακα */
-  overflow-y: auto; /* Επιτρέπει την κύλιση αν ο πίνακας είναι μεγάλος */
+  max-height: 60vh; 
+  overflow-y: auto; 
   width: 80%;
-  background-color: rgba(255, 255, 255, 0.9); /* Ανοιχτόχρωμο φόντο με διαφάνεια */
+  background-color: rgba(255, 255, 255, 0.9); 
   border-radius: 10px;
   padding: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -60,9 +60,9 @@
 }
 
 .search-bar {
-  width: 80%; /* Αυξήθηκε το πλάτος από 50% σε 80% */
-  max-width: 600px; /* Προστέθηκε μέγιστο πλάτος για μεγαλύτερες οθόνες */
-  padding: 12px; /* Αυξήθηκε το padding για καλύτερη εμφάνιση */
+  width: 80%; 
+  max-width: 600px; 
+  padding: 12px; 
   font-size: 16px;
   border: 1px solid #ccc;
   border-radius: 5px;

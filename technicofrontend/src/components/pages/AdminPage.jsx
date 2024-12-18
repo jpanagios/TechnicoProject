@@ -4,18 +4,17 @@ import "./AdminPage.css";
 
 function AdminPage() {
   const [users, setUsers] = useState([]);
-  const [filteredUsers, setFilteredUsers] = useState([]); // Φιλτραρισμένοι χρήστες
-  const [loading, setLoading] = useState(true); // Φόρτωση
-  const [search, setSearch] = useState(""); // Τιμή αναζήτησης
+  const [filteredUsers, setFilteredUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Φέρνει όλους τους χρήστες
         const allUsers = await getAllUsers();
         setUsers(allUsers);
-        setFilteredUsers(allUsers); // Αρχική εμφάνιση όλων των χρηστών
-        setLoading(false); // Τέλος φόρτωσης
+        setFilteredUsers(allUsers);
+        setLoading(false);
       } catch (error) {
         console.error("Error fetching data:", error);
         setLoading(false);
@@ -39,7 +38,7 @@ function AdminPage() {
       await deleteUser(userId);
       const updatedUsers = users.filter((user) => user.id !== userId);
       setUsers(updatedUsers);
-      setFilteredUsers(updatedUsers); // Ενημερώνουμε και τους φιλτραρισμένους χρήστες
+      setFilteredUsers(updatedUsers);
       alert("Ο χρήστης διαγράφηκε επιτυχώς!");
     } catch (error) {
       console.error("Error deleting user:", error);
@@ -47,7 +46,7 @@ function AdminPage() {
   };
 
   if (loading) {
-    return <div>Φόρτωση δεδομένων...</div>; // Προσωρινό μήνυμα φόρτωσης
+    return <div>Φόρτωση δεδομένων...</div>;
   }
 
   return (

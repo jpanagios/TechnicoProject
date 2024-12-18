@@ -2,7 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import PropertiesLogo from "../../assets/management.png";
 import RepairsLogo from "../../assets/tools.png";
-import ProfileLogo from "../../assets/user_my.png"; // Εισάγουμε το νέο εικονίδιο
+import ProfileLogo from "../../assets/user_my.png";
 import "./HomePage.css";
 
 function HomePage() {
@@ -12,7 +12,6 @@ function HomePage() {
     <div className="homepage-container">
       <h1>Τι ψάχνετε σήμερα;</h1>
       <div className="section">
-        {/* Νέο Παράθυρο για Προφίλ */}
         <div className="card">
           <img src={ProfileLogo} alt="Προφίλ Χρήστη" className="logo" />
           <Link to="/profile" className="button">
@@ -23,7 +22,6 @@ function HomePage() {
             σας.
           </p>
         </div>
-        {/* Παράθυρο για Ιδιοκτησίες */}
         <div className="card">
           <img
             src={PropertiesLogo}
@@ -38,7 +36,6 @@ function HomePage() {
             ιδιοκτησίες σας εύκολα, όλα σε ένα μέρος.
           </p>
         </div>
-        {/* Παράθυρο για Επισκευές */}
         <div className="card">
           <img src={RepairsLogo} alt="Προσθήκη Επισκευής" className="logo" />
           <Link to={`/repairs/${userId}`} className="button">

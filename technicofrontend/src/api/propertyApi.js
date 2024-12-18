@@ -1,12 +1,10 @@
 import api from "./axios";
 
-/** Φέρνει τα properties με βάση το userId */
 export const getProperties = async () => {
   try {
     const response = await api.get("/Property");
     console.log("Properties από API:", response.data);
 
-    // Επιστροφή ως array
     return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
     console.error("Error fetching properties:", error);
@@ -14,7 +12,6 @@ export const getProperties = async () => {
   }
 };
 
-/** Δημιουργία νέου property */
 export const createProperty = async (property) => {
   try {
     const response = await api.post("/Property", property);
@@ -26,7 +23,6 @@ export const createProperty = async (property) => {
   }
 };
 
-/** Ενημέρωση property */
 export const updateProperty = async (id, property) => {
   try {
     const response = await api.put(`/Property/${id}`, property);
@@ -37,7 +33,6 @@ export const updateProperty = async (id, property) => {
   }
 };
 
-/** Διαγραφή property */
 export const deleteProperty = async (id) => {
   try {
     await api.delete(`/Property/${id}`);

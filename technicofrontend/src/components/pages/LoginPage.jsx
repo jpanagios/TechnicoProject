@@ -16,7 +16,6 @@ function LoginPage() {
     e.preventDefault();
     setError("");
 
-    // Έλεγχος για Admin Credentials
     if (adminEmails.includes(email) && password === adminPassword) {
       alert("Καλωσορίσατε, Admin!");
       navigate("/admin");

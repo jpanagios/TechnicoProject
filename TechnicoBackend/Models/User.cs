@@ -25,7 +25,6 @@ namespace TechnicoBackend.Models
         [Required]
         public string Password { get; set; } = string.Empty;
 
-        // Προσθήκη του VatNumber
         [Required]
         [StringLength(15, ErrorMessage = "Ο ΑΦΜ πρέπει να είναι μέχρι 15 χαρακτήρες.")]
         public string VatNumber { get; set; } = string.Empty;

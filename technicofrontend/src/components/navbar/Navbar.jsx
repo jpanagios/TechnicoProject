@@ -6,10 +6,9 @@ function Navbar() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Εδώ μπορείς να καθαρίσεις τυχόν state ή τοπικά δεδομένα (π.χ. session storage)
-    localStorage.removeItem("authToken"); // Παράδειγμα καθαρισμού token
+    localStorage.removeItem("authToken");
     alert("Έχετε αποσυνδεθεί.");
-    navigate("/login"); // Μεταφορά στη σελίδα σύνδεσης
+    navigate("/login");
   };
 
   return (

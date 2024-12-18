@@ -27,7 +27,7 @@ namespace TechnicoBackend.Models
 
         public Guid PropertyId { get; set; }
 
-        [JsonIgnore] // Αποφυγή κυκλικών αναφορών
+        [JsonIgnore] 
         public Property? Property { get; set; }
     }
 }

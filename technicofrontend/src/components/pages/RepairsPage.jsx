@@ -9,7 +9,7 @@ import {
 import "./RepairsPage.css";
 
 function RepairsPage() {
-  const { userId } = useParams(); // Ανάκτηση του userId από το route
+  const { userId } = useParams();
   const [repairs, setRepairs] = useState(() => {
     const savedRepairs = localStorage.getItem(`repairs_${userId}`);
     return savedRepairs ? JSON.parse(savedRepairs) : [];
@@ -28,7 +28,7 @@ function RepairsPage() {
   const [editId, setEditId] = useState(null);
 
   useEffect(() => {
-    const savedUserId = localStorage.getItem("userId"); // Διασφαλίζουμε ότι υπάρχει το userId
+    const savedUserId = localStorage.getItem("userId");
     if (!savedUserId || savedUserId !== userId) {
       console.warn("User ID mismatch or missing in local storage.");
       return;

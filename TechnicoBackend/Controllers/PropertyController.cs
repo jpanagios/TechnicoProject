@@ -21,13 +21,11 @@ namespace TechnicoBackend.Controllers
         {
             try
             {
-                // Ανάκτηση του userId από το cookie
                 if (!Request.Cookies.TryGetValue("userId", out var userId))
                 {
                     return Unauthorized("Ο χρήστης δεν είναι συνδεδεμένος.");
                 }
 
-                // Φιλτράρισμα των properties
                 var properties = await _propertyService.GetPropertiesByUserIdAsync(Guid.Parse(userId));
                 return Ok(properties);
             }
@@ -60,13 +58,11 @@ namespace TechnicoBackend.Controllers
         {
             try
             {
-                // Ανάκτηση του userId από το cookie
                 if (!Request.Cookies.TryGetValue("userId", out var userId))
                 {
                     return Unauthorized("Ο χρήστης δεν είναι συνδεδεμένος.");
                 }
 
-                // Αντιστοίχιση του userId στο property
                 propertyDto.UserId = Guid.Parse(userId);
 
                 var createdProperty = await _propertyService.AddPropertyAsync(propertyDto);

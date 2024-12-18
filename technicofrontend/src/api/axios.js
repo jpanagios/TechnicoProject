@@ -1,12 +1,11 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "http://localhost:5000/api", // Το URL του backend
+    baseURL: "http://localhost:5000/api",
     headers: { "Content-Type": "application/json" },
     withCredentials: true,
 });
 
-// Παράδειγμα interceptors για debugging ή authentication token
 api.interceptors.request.use(
     (config) => {
         console.log('Request:', config);

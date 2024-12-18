@@ -20,7 +20,7 @@ namespace TechnicoBackend.Models
 
         public Guid UserId { get; set; }
 
-        [JsonIgnore] // Αποφυγή κυκλικών αναφορών
+        [JsonIgnore] 
         public User? User { get; set; }
 
         public ICollection<Repair>? Repairs { get; set; } = new List<Repair>();
