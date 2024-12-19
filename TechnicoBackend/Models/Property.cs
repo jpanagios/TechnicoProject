@@ -11,7 +11,7 @@ namespace TechnicoBackend.Models
 
         [Required]
         public string? Address { get; set; }
-
+        //σσ
         [Required]
         public string? City { get; set; }
 
